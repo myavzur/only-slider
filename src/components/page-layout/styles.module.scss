@@ -1,0 +1,20 @@
+.page {
+	--container-width: 1440px;
+
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+
+	display: grid;
+	grid-template-columns: 2fr var(--container-width) 1fr;
+
+	&__spacer {
+		// display: none;
+	}
+
+	&__container {
+
+		height: 100%;
+		width: var(--container-width);
+	}
+}

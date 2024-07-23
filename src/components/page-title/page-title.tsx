@@ -1,11 +1,12 @@
 import { FC } from "react";
+import cn from "classnames";
 
 import { PageTitleProps } from "./props.interface";
 import styles from "./styles.module.scss";
 
-export const PageTitle: FC<PageTitleProps> = ({ children }) => {
+export const PageTitle: FC<PageTitleProps> = ({ children, className }) => {
 	return (
-		<div className={styles.title}>
+		<div className={cn(styles.title, className)}>
 			<h1 className={styles.heading}>{children}</h1>
 		</div>
 	);
