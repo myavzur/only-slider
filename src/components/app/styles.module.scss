@@ -1,0 +1,36 @@
+.page {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+}
+
+.content {
+	--border: 1px solid rgba(66, 86, 122, 10%); // COLORS.
+
+	border-left: var(--border);
+	border-right: var(--border);
+	height: 100%;
+
+	&__title {
+		max-width: 350px;
+	}
+
+	&__controller {
+
+	}
+}
+
+.event {
+	pointer-events: none;
+
+	&__heading {
+		color: #3877EE; // COLORS.
+		font-size: 25px;
+	}
+
+	&__text {
+		margin-top: 15px;
+		color: #42567A; // COLORS.
+		font-size: 20px;
+	}
+}
