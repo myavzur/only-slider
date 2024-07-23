@@ -18,7 +18,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+
+    /* Absolute Imports */
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/assets/": ["./src/assets/*"],
+      "@/helpers": ["./src/helpers"],
+      "@/hooks": ["./src/hooks"],
+      "@/components/": ["./src/components/*"]
+    }
   },
   "include": [
     "src"
