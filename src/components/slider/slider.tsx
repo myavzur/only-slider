@@ -3,6 +3,8 @@ import { SliderProps } from "./props.interface";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import "swiper/css";
 
+import { SliderNavigation } from "./slider-navigation";
+
 export const Slider = <T extends unknown>({ slides, children, className }: SliderProps<T>) => {
 	return (
 		<Swiper
@@ -15,6 +17,8 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 					{children(slide)}
 				</SwiperSlide>
 			))}
+
+			{/* <SliderNavigation /> */}
 		</Swiper>
 	);
 };
