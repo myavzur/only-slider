@@ -35,10 +35,9 @@
 
 	&__slider {
 		position: absolute;
+		bottom: 8%;
 		left: 50%;
 		transform: translateX(-50%);
-		right: 80px;
-		bottom: 85px;
 		width: calc(100% - var(--padding-x) * 2);
 		z-index: 100;
 	}
@@ -53,7 +52,6 @@
 	&__line {
 		position: absolute;
 		background-color: rgba(66, 86, 122, 10%); // COLORS.
-
 		&_horizontal {
 			height: 1px;
 			width: 100%;
@@ -89,6 +87,42 @@
 			&_max {
 				color: #EF5DA8;
 			}
+		}
+	}
+
+	&__navigation {
+		position: absolute;
+		bottom: 22.5%;
+		transform: translateY(-50%);
+		left: var(--padding-x);
+	}
+
+	&__progress {
+		color: #42567A; // COLORS.
+		font-size: 14px;
+	}
+
+	&__controls {
+		padding-top: 20px;
+		display: flex;
+		align-items: center;
+		gap: 20px;
+	}
+
+	&__control {
+		width: 50px;
+		height: 50px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid rgba(66, 86, 122, 50%); // COLORS.
+		border-radius: 50%;
+		padding: 17px;
+		opacity: 1;
+		transition: opacity 300ms ease-in-out;
+
+		&:disabled {
+			opacity: 0.5;
 		}
 	}
 }
