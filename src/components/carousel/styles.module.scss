@@ -5,16 +5,10 @@
 		stroke-width: 1;
 	}
 
-	&__control {
-		position: relative;
+	// Неактивный стиль
+	&__group {
 		cursor: pointer;
-		fill: #F4F5F9;
-		stroke-width: 1;
-		stroke: rgb(48, 62, 88, 0.5); // COLORS.
-	}
-
-	&__circle {
-
+		fill: rgb(66, 86, 122);
 	}
 
 	&__text {
@@ -25,8 +19,6 @@
 	&__label {
 		font-family: "PT Sans";
 		font-weight: 700;
-		position: absolute;
-		left: 100%;
 		fill: rgb(66, 86, 122); // COLORS.
 		font-size: 20px;
 		stroke: none;
