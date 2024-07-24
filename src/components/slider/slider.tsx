@@ -59,8 +59,8 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 				slidesPerView={3}
 				grabCursor={true}
 			>
-				{slides.map((slide, idx) => (
-					<SwiperSlide key={idx} className={styles.slider__slide}>
+				{slides.map((slide, index) => (
+					<SwiperSlide key={index} className={styles.slider__slide}>
 						{children(slide)}
 					</SwiperSlide>
 				))}

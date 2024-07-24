@@ -14,5 +14,6 @@
 	&__container {
 		height: 100%;
 		width: var(--container-width);
+		overflow: hidden;
 	}
 }
