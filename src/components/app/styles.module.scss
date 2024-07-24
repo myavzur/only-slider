@@ -67,6 +67,13 @@
 		}
 	}
 
+	&__carousel {
+		position: absolute;
+		top: calc(var(--top-offset) + 8px);
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
 	.range {
 		display: flex;
 		align-items: center;

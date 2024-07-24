@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import cn from "classnames";
 
 import { gsap } from "gsap";
@@ -7,40 +7,37 @@ import { useGSAP } from "@gsap/react";
 import { PageTitle } from '@/components/page-title';
 
 import styles from "./styles.module.scss";
-import { getTimelapseEventsRange, timelapseData, sortTimelapseEventsByDate } from './data';
+import { timelapseData, sortTimelapseEventsByDate, getTimelapseRange } from './data';
 import { Slider } from '@/components/slider';
 import { PageLayout } from '../page-layout';
 import { Icon } from '../icon';
 import { padZero } from '@/helpers';
+import { Carousel } from '../carousel';
 
 export const App = () => {
   const [timelapse, setTimelapse] = useState(timelapseData[0]);
-
-  const [timelapsePosition, setTimelapsePosition] = useState(() => {
-    const idx = timelapseData.findIndex(({ id }) => id === timelapse.id);
-    return idx + 1;
+  const [timelapseIndex, setTimelapseIndex] = useState(() => {
+    const index = timelapseData.findIndex(({ id }) => id === timelapse.id);
+    return index;
   });
-
-  // Нужно для корректной первичной отрисовки, иначе при первом рендере сработает анимация.
-  const initialTimelapseRange = useRef(getTimelapseEventsRange(timelapse.events));
 
   const sortedTimelapseEvents = useMemo(() => {
     return sortTimelapseEventsByDate(timelapse.events);
   }, [timelapse]);
 
-  const rangeMinEl = useRef<HTMLSpanElement | null>(null);
-  const rangeMaxEl = useRef<HTMLSpanElement | null>(null);
+  const timelapseRangeMinEl = useRef<HTMLSpanElement | null>(null);
+  const timelapseRangeMaxEl = useRef<HTMLSpanElement | null>(null);
   const sliderEl = useRef<HTMLDivElement | null>(null);
 
   const selectTimelapse = useCallback((id: number) => {
     if (timelapse.id === id) return;
 
-    const idx = timelapseData.findIndex((timelapse) => timelapse.id === id);
-    if (idx === -1) return;
+    const index = timelapseData.findIndex((timelapse) => timelapse.id === id);
+    if (index === -1) return;
 
-    const newTimelapse = timelapseData[idx];
-    const range = getTimelapseEventsRange(newTimelapse.events);
-    setTimelapsePosition(idx + 1);
+    const newTimelapse = timelapseData[index];
+    const timelapseRange = getTimelapseRange(newTimelapse);
+    setTimelapseIndex(index);
 
     const timeline = gsap.timeline();
     timeline
@@ -48,14 +45,14 @@ export const App = () => {
         opacity: 0,
         onComplete: () => setTimelapse(newTimelapse)
       }, "time-travel")
-      .to(rangeMinEl.current, {
-        innerText: range.min,
+      .to(timelapseRangeMinEl.current, {
+        innerText: timelapseRange.min,
         snap: "innerText",
         ease: "power4.out",
         duration: 1
       }, "time-travel")
-      .to(rangeMaxEl.current, {
-        innerText: range.max,
+      .to(timelapseRangeMaxEl.current, {
+        innerText: timelapseRange.max,
         snap: "innerText",
         ease: "power4.out",
         duration: 1
@@ -67,20 +64,29 @@ export const App = () => {
   }, [timelapse]);
 
   const prevTimelapse = () => {
-    const currentIdx = timelapseData.findIndex((data) => data.id === timelapse.id);
-    if (currentIdx === 0) return;
+    const currentIndex = timelapseData.findIndex((data) => data.id === timelapse.id);
+    if (currentIndex === 0) return;
 
-    const newTimelapse = timelapseData[currentIdx - 1];
+    const newTimelapse = timelapseData[currentIndex - 1];
     selectTimelapse(newTimelapse.id);
   };
 
   const nextTimelapse = () => {
-    const currentIdx = timelapseData.findIndex((data) => data.id === timelapse.id);
-    if (currentIdx === timelapseData.length - 1) return;
+    const currentIndex = timelapseData.findIndex((data) => data.id === timelapse.id);
+    if (currentIndex === timelapseData.length - 1) return;
 
-    const newTimelapse = timelapseData[currentIdx + 1];
+    const newTimelapse = timelapseData[currentIndex + 1];
     selectTimelapse(newTimelapse.id);
   };
+
+  // Render initial timelapse range values
+  useEffect(() => {
+    const timelapseRange = getTimelapseRange(timelapse);
+
+    if (!timelapseRangeMinEl.current || !timelapseRangeMaxEl.current) return;
+    timelapseRangeMinEl.current.innerText = String(timelapseRange.min);
+    timelapseRangeMaxEl.current.innerText = String(timelapseRange.max);
+  }, []);
 
   return (
     <PageLayout>
@@ -93,39 +99,46 @@ export const App = () => {
 
           <div className={styles.range}>
             <span
-              ref={rangeMinEl}
+              ref={timelapseRangeMinEl}
               className={cn(styles.range__value, styles.range__value_min)}
-              onClick={() => selectTimelapse(1)}
             >
-              {initialTimelapseRange.current.min}
+              2024
             </span>
 
             <span
-              ref={rangeMaxEl}
+              ref={timelapseRangeMaxEl}
               className={cn(styles.range__value, styles.range__value_max)}
-              onClick={() => selectTimelapse(2)}
             >
-              {initialTimelapseRange.current.max}
+              2024
             </span>
+          </div>
+
+          <div className={styles.controller__carousel}>
+            <Carousel
+              items={timelapseData}
+              selectedItemIndex={timelapseIndex}
+              onSelectItem={selectTimelapse}
+              renderItemLabel={(timelapse) => timelapse.name}
+            />
           </div>
 
           <div className={styles.controller__navigation}>
             <span className={styles.controller__progress}>
-              {padZero(timelapsePosition)}/{padZero(timelapseData.length)}
+              {padZero(timelapseIndex + 1)}/{padZero(timelapseData.length)}
             </span>
 
             <div className={styles.controller__controls}>
               <button
                 className={styles.controller__control}
                 onClick={prevTimelapse}
-                disabled={timelapsePosition === 1}
+                disabled={timelapseIndex === 0}
               >
                 <Icon icon="arrow-left" />
               </button>
               <button
                 className={styles.controller__control}
                 onClick={nextTimelapse}
-                disabled={timelapsePosition === timelapseData.length}
+                disabled={timelapseIndex === timelapseData.length - 1}
               >
                 <Icon icon="arrow-left" isMirrored={true} />
               </button>
@@ -137,7 +150,7 @@ export const App = () => {
           <Slider slides={sortedTimelapseEvents}>
             {(slide) => (
               <div className={styles.event} key={slide.text}>
-                <h3 className={styles.event__date}>{slide.year}</h3>
+                <h3 className={styles.event__date}>{slide.date}</h3>
                 <p className={styles.event__text}>{slide.text}</p>
               </div>
             )}
