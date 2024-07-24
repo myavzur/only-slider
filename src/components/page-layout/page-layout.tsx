@@ -8,9 +8,7 @@ export const PageLayout: FC<PageLayoutProps> = ({ children }) => {
 		<main className={styles.page}>
 			<div className={styles.page__spacer} />
 
-			<div className={styles.page__container}>
-				{children}
-			</div>
+			<div className={styles.page__container}>{children}</div>
 
 			<div className={styles.page__spacer} />
 		</main>

@@ -1,14 +1,11 @@
 import cn from "classnames";
 import { FC } from "react";
 
+import sprite from "./assets/sprite.svg";
 import { IconProps } from "./props.interface";
 import styles from "./styles.module.scss";
-import sprite from "./assets/sprite.svg";
 
-export const Icon: FC<IconProps> = ({
-	icon,
-	isMirrored
-}) => {
+export const Icon: FC<IconProps> = ({ icon, isMirrored }) => {
 	return (
 		<svg
 			width="100%"

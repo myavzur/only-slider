@@ -1,20 +1,24 @@
 import cn from "classnames";
-import { SliderProps } from "./props.interface";
-import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
-import "swiper/css";
-
-import styles from "./styles.module.scss";
 import { useCallback, useEffect, useRef } from "react";
+import "swiper/css";
+import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
+
 import { Icon } from "../icon";
+import { SliderProps } from "./props.interface";
+import styles from "./styles.module.scss";
 
-
-export const Slider = <T extends unknown>({ slides, children, className }: SliderProps<T>) => {
+export const Slider = <T extends unknown>({
+	slides,
+	children,
+	className
+}: SliderProps<T>) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
 	const controlPrevEl = useRef<HTMLButtonElement | null>(null);
 	const controlNextEl = useRef<HTMLButtonElement | null>(null);
 
 	const updateControls = useCallback(() => {
-		if (!sliderEl.current || !controlPrevEl.current || !controlNextEl.current) return;
+		if (!sliderEl.current || !controlPrevEl.current || !controlNextEl.current)
+			return;
 
 		const swiper = sliderEl.current.swiper;
 
@@ -29,7 +33,7 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 		} else {
 			controlNextEl.current.removeAttribute("disabled");
 		}
-	}, [])
+	}, []);
 
 	const handleSlidePrev = useCallback(() => {
 		if (!sliderEl.current) return;
@@ -60,7 +64,10 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 				grabCursor={true}
 			>
 				{slides.map((slide, index) => (
-					<SwiperSlide key={index} className={styles.slider__slide}>
+					<SwiperSlide
+						key={index}
+						className={styles.slider__slide}
+					>
 						{children(slide)}
 					</SwiperSlide>
 				))}
@@ -79,7 +86,10 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 				className={cn(styles.slider__control, styles.slider__control_next)}
 				onClick={handleSlideNext}
 			>
-				<Icon icon="arrow-left" isMirrored={true} />
+				<Icon
+					icon="arrow-left"
+					isMirrored={true}
+				/>
 			</button>
 		</div>
 	);
