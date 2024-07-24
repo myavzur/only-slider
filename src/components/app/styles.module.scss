@@ -7,8 +7,22 @@
 	height: 100%;
 
 	&__title {
-		max-width: 350px;
 		position: absolute;
+		top: 15vh;
+		padding: 0 var(--padding-x);
+		max-width: 350px;
+
+		&::before {
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			content: "";
+			display: block;
+			height: calc(100% - 25px);
+			width: 5px;
+			background: linear-gradient(to bottom, #3877EE 0%, #EF5DA8 100%);
+		}
 	}
 
 	&__controller {
@@ -24,7 +38,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		right: 80px;
-		bottom: 100px;
+		bottom: 85px;
 		width: calc(100% - var(--padding-x) * 2);
 		z-index: 100;
 	}
@@ -81,6 +95,7 @@
 
 .event {
 	&__date {
+		font-family: "Bebas Neue";
 		color: #3877EE; // COLORS.
 		font-size: 25px;
 	}
