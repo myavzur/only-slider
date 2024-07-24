@@ -1,19 +1,19 @@
-interface HistoryEvent {
+interface TimelapseEvent {
 	year: number;
 	text: string;
 }
 
-interface History {
+interface Timelapse {
 	id: number;
 	name: string;
-	events: HistoryEvent[];
+	events: TimelapseEvent[];
 }
 
-export const sortEventsByDate = (events: HistoryEvent[]) => {
+export const sortTimelapseEventsByDate = (events: TimelapseEvent[]) => {
 	return events.sort((a, b) => a.year - b.year);
 };
 
-export const getEventsDateRange = (events: HistoryEvent[]) => {
+export const getTimelapseEventsRange = (events: TimelapseEvent[]) => {
 	const dates = events.map((event) => event.year);
 
 	return {
@@ -22,7 +22,7 @@ export const getEventsDateRange = (events: HistoryEvent[]) => {
 	};
 };
 
-export const historyData: History[] = [
+export const timelapseData: Timelapse[] = [
 	{
 		id: 1,
 		name: "Наука",

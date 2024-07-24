@@ -33,7 +33,6 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 
 	const handleSlidePrev = useCallback(() => {
 		if (!sliderEl.current) return;
-
 		const swiper = sliderEl.current.swiper;
 		swiper.slidePrev();
 
@@ -42,7 +41,6 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 
 	const handleSlideNext = useCallback(() => {
 		if (!sliderEl.current) return;
-
 		const swiper = sliderEl.current.swiper;
 		swiper.slideNext();
 
@@ -81,7 +79,7 @@ export const Slider = <T extends unknown>({ slides, children, className }: Slide
 				className={cn(styles.slider__control, styles.slider__control_next)}
 				onClick={handleSlideNext}
 			>
-				<Icon icon="arrow-left" />
+				<Icon icon="arrow-left" isMirrored={true} />
 			</button>
 		</div>
 	);

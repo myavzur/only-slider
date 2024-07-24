@@ -7,37 +7,43 @@ import { useGSAP } from "@gsap/react";
 import { PageTitle } from '@/components/page-title';
 
 import styles from "./styles.module.scss";
-import { getEventsDateRange, historyData, sortEventsByDate } from './data';
+import { getTimelapseEventsRange, timelapseData, sortTimelapseEventsByDate } from './data';
 import { Slider } from '@/components/slider';
 import { PageLayout } from '../page-layout';
-
-const nowYear = new Date().getFullYear();
+import { Icon } from '../icon';
+import { padZero } from '@/helpers';
 
 export const App = () => {
-  const [history, setHistory] = useState(historyData[0]);
-  const initialRange = useRef(getEventsDateRange(history.events));
+  const [timelapse, setTimelapse] = useState(timelapseData[0]);
 
-  const sortedHistoryEvents = useMemo(() => {
-    return sortEventsByDate(history.events);
-  }, [history]);
+  const timelapsePosition = useMemo(() => {
+    const idx = timelapseData.findIndex(({ id }) => id === timelapse.id);
+    return idx + 1;
+  }, [timelapse]);
+
+  const initialTimelapseRange = useRef(getTimelapseEventsRange(timelapse.events));
+
+  const sortedTimelapseEvents = useMemo(() => {
+    return sortTimelapseEventsByDate(timelapse.events);
+  }, [timelapse]);
 
   const rangeMinEl = useRef<HTMLSpanElement | null>(null);
   const rangeMaxEl = useRef<HTMLSpanElement | null>(null);
   const sliderEl = useRef<HTMLDivElement | null>(null);
 
-  const handleSelectHistory = useCallback((id: number) => {
-    if (history.id === id) return;
+  const handleSelectTimelapse = useCallback((id: number) => {
+    if (timelapse.id === id) return;
 
-    const newHistory = historyData.find((history) => history.id === id);
-    if (!newHistory) return;
+    const newTimelapse = timelapseData.find((timelapse) => timelapse.id === id);
+    if (!newTimelapse) return;
 
     const timeline = gsap.timeline();
-    const range = getEventsDateRange(newHistory.events);
+    const range = getTimelapseEventsRange(newTimelapse.events);
 
     timeline
       .to(sliderEl.current, {
         opacity: 0,
-        onComplete: () => setHistory(newHistory)
+        onComplete: () => setTimelapse(newTimelapse)
       }, "time-travel")
       .to(rangeMinEl.current, {
         innerText: range.min,
@@ -55,40 +61,77 @@ export const App = () => {
     timeline
       .to(sliderEl.current, { opacity: 1 }, "finish")
       .from(sliderEl.current, { y: 0 }, "finish");
-  }, [history]);
+  }, [timelapse]);
+
+  const prevTimelapse = () => {
+    const currentIdx = timelapseData.findIndex((data) => data.id === timelapse.id);
+    if (currentIdx === 0) return;
+
+    const newTimelapse = timelapseData[currentIdx - 1];
+    handleSelectTimelapse(newTimelapse.id);
+  };
+
+  const nextTimelapse = () => {
+    const currentIdx = timelapseData.findIndex((data) => data.id === timelapse.id);
+    if (currentIdx === timelapseData.length - 1) return;
+
+    const newTimelapse = timelapseData[currentIdx + 1];
+    handleSelectTimelapse(newTimelapse.id);
+  };
 
   return (
     <PageLayout>
       <div className={styles.content}>
         <PageTitle className={styles.content__title}>Исторические даты</PageTitle>
 
-        <div className={styles.content__controller}>
-          <div className={styles.controller}>
-            <div className={cn(styles.controller__line, styles.controller__line_vertical)} />
-            <div className={cn(styles.controller__line, styles.controller__line_horizontal)} />
+        <div className={cn(styles.content__controller, styles.controller)}>
+          <div className={cn(styles.controller__line, styles.controller__line_vertical)} />
+          <div className={cn(styles.controller__line, styles.controller__line_horizontal)} />
 
-            <div className={styles.range}>
-              <span
-                ref={rangeMinEl}
-                className={cn(styles.range__value, styles.range__value_min)}
-                onClick={() => handleSelectHistory(1)}
-              >
-                {initialRange.current.min}
-              </span>
+          <div className={styles.range}>
+            <span
+              ref={rangeMinEl}
+              className={cn(styles.range__value, styles.range__value_min)}
+              onClick={() => handleSelectTimelapse(1)}
+            >
+              {initialTimelapseRange.current.min}
+            </span>
 
-              <span
-                ref={rangeMaxEl}
-                className={cn(styles.range__value, styles.range__value_max)}
-                onClick={() => handleSelectHistory(2)}
+            <span
+              ref={rangeMaxEl}
+              className={cn(styles.range__value, styles.range__value_max)}
+              onClick={() => handleSelectTimelapse(2)}
+            >
+              {initialTimelapseRange.current.max}
+            </span>
+          </div>
+
+          <div className={styles.controller__navigation}>
+            <span className={styles.controller__progress}>
+              {padZero(timelapsePosition)}/{padZero(timelapseData.length)}
+            </span>
+
+            <div className={styles.controller__controls}>
+              <button
+                className={styles.controller__control}
+                onClick={prevTimelapse}
+                disabled={timelapsePosition === 1}
               >
-                {initialRange.current.max}
-              </span>
+                <Icon icon="arrow-left" />
+              </button>
+              <button
+                className={styles.controller__control}
+                onClick={nextTimelapse}
+                disabled={timelapsePosition === timelapseData.length}
+              >
+                <Icon icon="arrow-left" isMirrored={true} />
+              </button>
             </div>
           </div>
         </div>
 
         <div className={styles.content__slider} ref={sliderEl}>
-          <Slider slides={sortedHistoryEvents}>
+          <Slider slides={sortedTimelapseEvents}>
             {(slide) => (
               <div className={styles.event} key={slide.text}>
                 <h3 className={styles.event__date}>{slide.year}</h3>
