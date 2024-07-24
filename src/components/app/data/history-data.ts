@@ -9,6 +9,19 @@ interface History {
 	events: HistoryEvent[];
 }
 
+export const sortEventsByDate = (events: HistoryEvent[]) => {
+	return events.sort((a, b) => a.year - b.year);
+};
+
+export const getEventsDateRange = (events: HistoryEvent[]) => {
+	const dates = events.map((event) => event.year);
+
+	return {
+		min: Math.min(...dates),
+		max: Math.max(...dates)
+	};
+};
+
 export const historyData: History[] = [
 	{
 		id: 1,

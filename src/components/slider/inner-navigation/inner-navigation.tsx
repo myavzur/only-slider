@@ -6,10 +6,10 @@ import { useSwiper } from "swiper/react";
 import { Icon } from "@/components/icon";
 import { useEvent } from "@/hooks";
 
-export const SliderNavigation: FC = () => {
+export const InnerNavigation: FC = () => {
 	const swiper = useSwiper();
 
-	const [_, forceUpdate] = useState(1);
+	const [_, forceUpdate] = useState(0);
 
 	const handleSlideChange = useEvent(() => {
 		forceUpdate(Math.random());
@@ -18,12 +18,12 @@ export const SliderNavigation: FC = () => {
 	useEffect(() => {
 		swiper.on("slideChange", handleSlideChange);
 		return () => swiper.off("slideChange", handleSlideChange);
-	})
+	}, [swiper, handleSlideChange]);
 
 	return (
 		<div className={styles.slider__controls}>
 			<button
-				className={cn(styles.slider__controller, styles.slider__controller_prev)}
+				className={cn(styles.slider__control, styles.slider__control_prev)}
 				disabled={swiper.isBeginning}
 				onClick={() => swiper.slidePrev()}
 			>
@@ -31,7 +31,7 @@ export const SliderNavigation: FC = () => {
 			</button>
 
 			<button
-				className={cn(styles.slider__controller, styles.slider__controller_next)}
+				className={cn(styles.slider__control, styles.slider__control_next)}
 				disabled={swiper.isEnd}
 				onClick={() => swiper.slideNext()}
 			>

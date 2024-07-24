@@ -1,13 +1,14 @@
 .content {
+	--padding-x: 80px;
 	--border: 1px solid rgba(66, 86, 122, 10%); // COLORS.
 
 	position: relative;
-	border-left: var(--border);
-	border-right: var(--border);
+	border: var(--border);
 	height: 100%;
 
 	&__title {
 		max-width: 350px;
+		position: absolute;
 	}
 
 	&__controller {
@@ -17,27 +18,40 @@
 		width: 100%;
 		height: 100%;
 	}
+
+	&__slider {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		right: 80px;
+		bottom: 100px;
+		width: calc(100% - var(--padding-x) * 2);
+		z-index: 100;
+	}
 }
 
 .controller {
+	--top-offset: 44%;
+
 	height: 100%;
 	position: relative;
 
 	&__line {
 		position: absolute;
-		top: 50%;
-		left: 0;
-
-		height: 1px;
-		width: 100%;
 		background-color: rgba(66, 86, 122, 10%); // COLORS.
 
 		&_horizontal {
-			transform: translateY(-50%);
+			height: 1px;
+			width: 100%;
+			top: var(--top-offset);
 		}
 
 		&_vertical {
-			transform: rotateZ(90deg);
+			height: 100%;
+			width: 1px;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
 		}
 	}
 
@@ -49,7 +63,7 @@
 		font-size: 200px;
 		font-weight: 700;
 		position: absolute;
-		top: 50%;
+		top: var(--top-offset);
 		left: 50%;
 		transform: translate(-50%, -50%);
 
