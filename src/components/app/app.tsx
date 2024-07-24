@@ -16,11 +16,12 @@ import { padZero } from '@/helpers';
 export const App = () => {
   const [timelapse, setTimelapse] = useState(timelapseData[0]);
 
-  const timelapsePosition = useMemo(() => {
+  const [timelapsePosition, setTimelapsePosition] = useState(() => {
     const idx = timelapseData.findIndex(({ id }) => id === timelapse.id);
     return idx + 1;
-  }, [timelapse]);
+  });
 
+  // Нужно для корректной первичной отрисовки, иначе при первом рендере сработает анимация.
   const initialTimelapseRange = useRef(getTimelapseEventsRange(timelapse.events));
 
   const sortedTimelapseEvents = useMemo(() => {
@@ -31,15 +32,17 @@ export const App = () => {
   const rangeMaxEl = useRef<HTMLSpanElement | null>(null);
   const sliderEl = useRef<HTMLDivElement | null>(null);
 
-  const handleSelectTimelapse = useCallback((id: number) => {
+  const selectTimelapse = useCallback((id: number) => {
     if (timelapse.id === id) return;
 
-    const newTimelapse = timelapseData.find((timelapse) => timelapse.id === id);
-    if (!newTimelapse) return;
+    const idx = timelapseData.findIndex((timelapse) => timelapse.id === id);
+    if (idx === -1) return;
+
+    const newTimelapse = timelapseData[idx];
+    const range = getTimelapseEventsRange(newTimelapse.events);
+    setTimelapsePosition(idx + 1);
 
     const timeline = gsap.timeline();
-    const range = getTimelapseEventsRange(newTimelapse.events);
-
     timeline
       .to(sliderEl.current, {
         opacity: 0,
@@ -68,7 +71,7 @@ export const App = () => {
     if (currentIdx === 0) return;
 
     const newTimelapse = timelapseData[currentIdx - 1];
-    handleSelectTimelapse(newTimelapse.id);
+    selectTimelapse(newTimelapse.id);
   };
 
   const nextTimelapse = () => {
@@ -76,7 +79,7 @@ export const App = () => {
     if (currentIdx === timelapseData.length - 1) return;
 
     const newTimelapse = timelapseData[currentIdx + 1];
-    handleSelectTimelapse(newTimelapse.id);
+    selectTimelapse(newTimelapse.id);
   };
 
   return (
@@ -92,7 +95,7 @@ export const App = () => {
             <span
               ref={rangeMinEl}
               className={cn(styles.range__value, styles.range__value_min)}
-              onClick={() => handleSelectTimelapse(1)}
+              onClick={() => selectTimelapse(1)}
             >
               {initialTimelapseRange.current.min}
             </span>
@@ -100,7 +103,7 @@ export const App = () => {
             <span
               ref={rangeMaxEl}
               className={cn(styles.range__value, styles.range__value_max)}
-              onClick={() => handleSelectTimelapse(2)}
+              onClick={() => selectTimelapse(2)}
             >
               {initialTimelapseRange.current.max}
             </span>
