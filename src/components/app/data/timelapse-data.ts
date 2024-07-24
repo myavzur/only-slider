@@ -76,5 +76,5 @@ export const timelapseData: Timelapse[] = [
 				text: "Компания Tesla официально представила первый в мире электрический грузовик Tesla Semi"
 			}
 		]
-	},
+	}
 ];
