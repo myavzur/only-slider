@@ -29,25 +29,27 @@ export const App = () => {
 	const sliderEl = useRef<HTMLDivElement | null>(null);
 
 	const selectTimelapse = useCallback(
-		(id: number) => {
-			if (timelapse.id === id) return;
-
-			const index = timelapseData.findIndex((timelapse) => timelapse.id === id);
-			if (index === -1) return;
+		(index: number) => {
+			if (timelapseIndex === index) return;
 
 			const newTimelapse = timelapseData[index];
+			if (!newTimelapse) return;
+
 			const timelapseRange = getTimelapseRange(newTimelapse);
 			setTimelapseIndex(index);
 
-			const timeline = gsap.timeline();
+			const timeline = gsap.timeline({ id: "time-travel" });
+
 			timeline
 				.to(
 					sliderEl.current,
 					{
 						opacity: 0,
+						y: 10,
+						ease: "power4.out",
 						onComplete: () => setTimelapse(newTimelapse)
 					},
-					"time-travel"
+					"Traveling..."
 				)
 				.to(
 					timelapseRangeMinEl.current,
@@ -57,7 +59,7 @@ export const App = () => {
 						ease: "power4.out",
 						duration: 1
 					},
-					"time-travel"
+					"Traveling..."
 				)
 				.to(
 					timelapseRangeMaxEl.current,
@@ -67,30 +69,28 @@ export const App = () => {
 						ease: "power4.out",
 						duration: 1
 					},
-					"time-travel"
+					"Traveling..."
+				)
+				.to(
+					sliderEl.current,
+					{
+						opacity: 1,
+						y: 10
+					},
+					"Slider enter"
 				);
-
-			timeline
-				.to(sliderEl.current, { opacity: 1 }, "finish")
-				.from(sliderEl.current, { y: 0 }, "finish");
 		},
-		[timelapse]
+		[timelapseIndex]
 	);
 
 	const prevTimelapse = () => {
-		const currentIndex = timelapseData.findIndex((data) => data.id === timelapse.id);
-		if (currentIndex === 0) return;
-
-		const newTimelapse = timelapseData[currentIndex - 1];
-		selectTimelapse(newTimelapse.id);
+		if (timelapseIndex === 0) return;
+		selectTimelapse(timelapseIndex - 1);
 	};
 
 	const nextTimelapse = () => {
-		const currentIndex = timelapseData.findIndex((data) => data.id === timelapse.id);
-		if (currentIndex === timelapseData.length - 1) return;
-
-		const newTimelapse = timelapseData[currentIndex + 1];
-		selectTimelapse(newTimelapse.id);
+		if (timelapseIndex === timelapseData.length - 1) return;
+		selectTimelapse(timelapseIndex + 1);
 	};
 
 	// Render initial timelapse range values
@@ -137,9 +137,9 @@ export const App = () => {
 					<div className={styles.controller__carousel}>
 						<Carousel
 							items={timelapseData}
-							selectedItemIndex={timelapseIndex}
-							onSelectItem={selectTimelapse}
-							renderItemLabel={(timelapse) => timelapse.name}
+							selectedIndex={timelapseIndex}
+							onSelect={selectTimelapse}
+							renderLabel={(timelapse) => timelapse.name}
 						/>
 					</div>
 

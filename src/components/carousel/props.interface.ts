@@ -1,6 +1,6 @@
 export interface CarouselProps<T> {
 	items: T[];
-	selectedItemIndex: number;
-	onSelectItem: (index: number) => void;
-	renderItemLabel?: (item: T) => React.ReactNode;
+	selectedIndex: number;
+	onSelect: (index: number) => void;
+	renderLabel?: (item: T) => React.ReactNode;
 }

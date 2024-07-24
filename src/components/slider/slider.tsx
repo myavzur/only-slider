@@ -9,8 +9,7 @@ import styles from "./styles.module.scss";
 
 export const Slider = <T extends unknown>({
 	slides,
-	children,
-	className
+	children
 }: SliderProps<T>) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
 	const controlPrevEl = useRef<HTMLButtonElement | null>(null);
