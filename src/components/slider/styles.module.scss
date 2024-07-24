@@ -1,5 +1,27 @@
 .slider {
-	&__controller {
+	display: grid;
 
+	&__slide {
+		user-select: none;
+	}
+
+	&__controls {
+		position: absolute;
+		left: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&__control {
+		height: 40px;
+		width: 40px;
+
+		&:disabled {
+			display: none;
+		}
 	}
 }
