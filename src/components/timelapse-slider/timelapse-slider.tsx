@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import cn from "classnames";
 import styles from "./styles.module.scss";
 import { TimelapseSliderProps } from "./props.interface";
-import { padZero } from "@/helpers";
+import { killTweenIfExists, padZero } from "@/helpers";
 import { Carousel } from "./ui/carousel";
 import { Icon } from "@/components/icon";
 import { gsap } from "gsap";
@@ -11,6 +11,7 @@ import { Title } from "./ui/title";
 import { findEventsRange } from "./helpers";
 import { Navigation } from "./ui/navigation";
 import { EventSlide } from "./ui/event-slide";
+import { useGSAP } from "@gsap/react";
 
 export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) => {
 	const [selectedTimelapse, setSelectedTimelapse] = useState(timelapses[0]);
@@ -26,62 +27,63 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 		return selectedTimelapse.events.sort((a, b) => a.date - b.date);
 	}, [selectedTimelapse]);
 
+	const containerRef = useRef<HTMLDivElement | null>(null);
 	const eventsRangeMinRef = useRef<HTMLSpanElement | null>(null);
 	const eventsRangeMaxRef = useRef<HTMLSpanElement | null>(null);
-	const sliderRef = useRef<HTMLDivElement | null>(null);
+	const eventsSliderRef = useRef<HTMLDivElement | null>(null);
 
-	const selectTimelapse = useCallback(
+	const { contextSafe, context } = useGSAP({ scope: containerRef });
+
+	const selectTimelapse = contextSafe(
 		(index: number) => {
-			if (selectedTimelapseIndex === index) return;
+		const newTimelapse = timelapses[index];
+		const isAlreadySelected = selectedTimelapseIndex === index;
+		if (isAlreadySelected || !newTimelapse) return;
 
-			const newTimelapse = timelapses[index];
-			if (!newTimelapse) return;
+		const eventsRange = findEventsRange(newTimelapse);
+		setSelectedTimelapseIndex(index);
 
-			const eventsRange = findEventsRange(newTimelapse);
-			setSelectedTimelapseIndex(index);
-
-			gsap.timeline()
-				.to(
-					sliderRef.current,
-					{
-						opacity: 0,
-						y: 10,
-						ease: "power4.out",
-						onComplete: () => setSelectedTimelapse(newTimelapse)
-					},
-					"Traveling..."
-				)
-				.to(
-					eventsRangeMinRef.current,
-					{
-						innerText: eventsRange.min,
-						snap: "innerText",
-						ease: "power4.out",
-						duration: 1
-					},
-					"Traveling..."
-				)
-				.to(
-					eventsRangeMaxRef.current,
-					{
-						innerText: eventsRange.max,
-						snap: "innerText",
-						ease: "power4.out",
-						duration: 1
-					},
-					"Traveling..."
-				)
-				.to(
-					sliderRef.current,
-					{
-						opacity: 1,
-						y: 10
-					},
-					"Slider enter"
-				);
-		},
-		[selectedTimelapseIndex, timelapses]
-	);
+		killTweenIfExists("Animate slider and range");
+		gsap.timeline({ id: "Animate slider and range" })
+			.to(
+				eventsSliderRef.current,
+				{
+					opacity: 0,
+					y: 10,
+					ease: "power4.out",
+					onComplete: () => {
+						setSelectedTimelapse(newTimelapse);
+					}
+				}
+			)
+			.to(
+				eventsRangeMinRef.current,
+				{
+					innerText: eventsRange.min,
+					snap: "innerText",
+					ease: "power4.out",
+					duration: 1
+				},
+				"<"
+			)
+			.to(
+				eventsRangeMaxRef.current,
+				{
+					innerText: eventsRange.max,
+					snap: "innerText",
+					ease: "power4.out",
+					duration: 1
+				},
+				"<"
+			)
+			.to(
+				eventsSliderRef.current,
+				{
+					opacity: 1,
+					y: 10
+				}
+			);
+	});
 
 	const prevTimelapse = () => {
 		if (selectedTimelapseIndex === 0) return;
@@ -103,7 +105,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 	}, []);
 
 	return (
-		<div className={styles.timelapse}>
+		<div className={styles.timelapse} ref={containerRef}>
 				<Title className={styles.timelapse__title}>{title}</Title>
 
 				<div className={cn(styles.timelapse__controller, styles.controller)}>
@@ -154,7 +156,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 
 				<div
 					className={styles.timelapse__events}
-					ref={sliderRef}
+					ref={eventsSliderRef}
 				>
 					<Slider slides={sortedEvents}>
 						{(event) => (
