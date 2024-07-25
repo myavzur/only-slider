@@ -1,42 +1,6 @@
-interface TimelapseEvent {
-	date: number;
-	text: string;
-}
+import { Timelapse } from "@/components/timelapse-slider/interfaces";
 
-interface Timelapse {
-	id: number;
-	name?: string | null;
-	events: TimelapseEvent[];
-}
-
-export const sortTimelapseEventsByDate = (events: TimelapseEvent[]) => {
-	return events.sort((a, b) => a.date - b.date);
-};
-
-export const getTimelapseRange = (timelapse: Timelapse) => {
-	const events = timelapse.events;
-
-	let min = events[0].date;
-	let max = events[0].date;
-
-	for (let i = 0; i < events.length; i++) {
-		const event = events[i];
-
-		if (event.date < min) {
-			min = event.date;
-			continue;
-		}
-
-		if (event.date > max) {
-			max = event.date;
-			continue;
-		}
-	}
-
-	return { min, max };
-};
-
-export const timelapseData: Timelapse[] = [
+export const historicalTimelapses: Timelapse[] = [
 	{
 		id: 1,
 		name: "Anteater, giant",

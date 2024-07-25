@@ -1,8 +1,9 @@
 @import "./normalize.scss";
 @import "./reset.scss";
 @import "./fonts.scss";
+@import "./themes.scss";
 
 body {
 	font-family: "PT Sans";
-	background-color: #F4F5F9; // COLORS.
+	background-color: var(--color-white);
 }

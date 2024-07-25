@@ -1,25 +1,25 @@
 .canvas {
 	&__path {
 		fill: none;
-		stroke: rgba(66, 86, 122, 0.2); // COLORS.
+		stroke: rgba(var(--color-blue-800), 0.2);
 		stroke-width: 1;
 	}
 
 	// Неактивный стиль
 	&__group {
 		cursor: pointer;
-		fill: rgb(66, 86, 122);
+		fill: rgb(var(--color-blue-800));
 	}
 
-	&__text {
+	&__text,
+	&__label {
 		font-family: "PT Sans";
-		fill: rgb(66, 86, 122); // COLORS.
+		fill: rgb(var(--color-blue-800));
+		user-select: none;
 	}
 
 	&__label {
-		font-family: "PT Sans";
 		font-weight: 700;
-		fill: rgb(66, 86, 122); // COLORS.
 		font-size: 20px;
 		stroke: none;
 	}
