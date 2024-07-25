@@ -29,8 +29,7 @@ const ACTIVE_DOT_ATTRS: gsap.AttrVars = {
 export const Carousel = <T extends unknown>({
 	items,
 	selectedIndex,
-	onSelect,
-	renderLabel
+	onSelect
 }: CarouselProps<T>) => {
 	const containerRef = useRef<SVGSVGElement | null>(null);
 
@@ -85,7 +84,13 @@ export const Carousel = <T extends unknown>({
 				.to(containerEl, {
 					duration: 1,
 					rotate: -finalAngle,
-					transformOrigin: "center center"
+					transformOrigin: "center center",
+					onUpdate: () => {
+						gsap.to("g", {
+							rotate: finalAngle,
+							transformOrigin: "center center"
+						})
+					}
 				})
 				.to(
 					["g", "circle"],
@@ -154,17 +159,6 @@ export const Carousel = <T extends unknown>({
 					>
 						{index + 1}
 					</text>
-
-					{renderLabel && (
-						<text
-							data-gsap-id="label"
-							className={styles.canvas__label}
-							x="45"
-							dy="0.3em"
-						>
-							{renderLabel(item)}
-						</text>
-					)}
 				</g>
 			))}
 		</svg>

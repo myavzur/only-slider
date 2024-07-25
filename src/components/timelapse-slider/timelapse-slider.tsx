@@ -140,7 +140,6 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 							items={timelapses}
 							selectedIndex={selectedTimelapseIndex}
 							onSelect={selectTimelapse}
-							renderLabel={(timelapse) => timelapse.name}
 						/>
 					</div>
 
