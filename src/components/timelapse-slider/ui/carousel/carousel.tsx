@@ -17,14 +17,14 @@ const CAROUSEL_RADIUS = CAROUSEL_CENTER_CORD - 230;
 const INACTIVE_DOT_ATTRS: gsap.AttrVars = {
 	r: 5,
 	fill: "rgb(66, 86, 122)"
-}
+};
 
 const ACTIVE_DOT_ATTRS: gsap.AttrVars = {
 	r: 25,
 	fill: "rgb(255, 255, 255)",
 	strokeWidth: 1,
 	stroke: "rgb(48, 62, 88, 0.5)"
-}
+};
 
 export const Carousel = <T extends unknown>({
 	items,
@@ -40,7 +40,7 @@ export const Carousel = <T extends unknown>({
 
 			if (placeDotsTween && placeDotsTween.isActive()) {
 				placeDotsTween.kill();
-			};
+			}
 
 			items.forEach((_, index) => {
 				const groupSelector = `g[data-index="${index}"]`;
@@ -80,7 +80,12 @@ export const Carousel = <T extends unknown>({
 			}
 
 			gsap
-				.timeline({ id: "Rotate carousel", onComplete: () => { context.kill() } })
+				.timeline({
+					id: "Rotate carousel",
+					onComplete: () => {
+						context.kill();
+					}
+				})
 				.to(containerEl, {
 					duration: 1,
 					rotate: -finalAngle,
@@ -89,7 +94,7 @@ export const Carousel = <T extends unknown>({
 						gsap.to("g", {
 							rotate: finalAngle,
 							transformOrigin: "center center"
-						})
+						});
 					}
 				})
 				.to(
@@ -106,12 +111,9 @@ export const Carousel = <T extends unknown>({
 					},
 					"<"
 				)
-				.to(
-					[currentGroupSelector, `${currentGroupSelector}>circle`],
-					{
-						attr: ACTIVE_DOT_ATTRS
-					}
-				)
+				.to([currentGroupSelector, `${currentGroupSelector}>circle`], {
+					attr: ACTIVE_DOT_ATTRS
+				})
 				.to(
 					`${currentGroupSelector}>text`,
 					{
@@ -149,7 +151,7 @@ export const Carousel = <T extends unknown>({
 					key={index}
 					onClick={() => onSelect(index)}
 				>
-					<circle	{...INACTIVE_DOT_ATTRS} />
+					<circle {...INACTIVE_DOT_ATTRS} />
 
 					<text
 						data-gsap-id="text"

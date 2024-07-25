@@ -7,10 +7,7 @@ import { Icon } from "../icon";
 import { SliderProps } from "./props.interface";
 import styles from "./styles.module.scss";
 
-export const Slider = <T extends unknown>({
-	slides,
-	children
-}: SliderProps<T>) => {
+export const Slider = <T extends unknown>({ slides, children }: SliderProps<T>) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
 	const controlPrevEl = useRef<HTMLButtonElement | null>(null);
 	const controlNextEl = useRef<HTMLButtonElement | null>(null);

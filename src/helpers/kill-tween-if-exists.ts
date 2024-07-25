@@ -6,4 +6,4 @@ export const killTweenIfExists = (id: string) => {
 	if (tween && tween.isActive()) {
 		tween.kill();
 	}
-}
+};

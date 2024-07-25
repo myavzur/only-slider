@@ -1,9 +1,10 @@
-import { FC } from "react";
-import { NavigationProps } from "./props.interface";
 import cn from "classnames";
-import styles from "./styles.module.scss";
+import { FC } from "react";
+
 import { Icon } from "@/components/icon";
 
+import { NavigationProps } from "./props.interface";
+import styles from "./styles.module.scss";
 
 export const Navigation: FC<NavigationProps> = ({
 	onPrev,
@@ -15,9 +16,7 @@ export const Navigation: FC<NavigationProps> = ({
 }) => {
 	return (
 		<div className={cn(styles.navigation, className)}>
-			<span className={styles.navigation__progress}>
-				{progress}
-			</span>
+			<span className={styles.navigation__progress}>{progress}</span>
 
 			<div className={styles.navigation__controls}>
 				<button
@@ -39,5 +38,5 @@ export const Navigation: FC<NavigationProps> = ({
 				</button>
 			</div>
 		</div>
-	)
-}
+	);
+};
