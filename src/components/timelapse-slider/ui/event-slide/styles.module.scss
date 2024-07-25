@@ -1,4 +1,9 @@
+@import "@/assets/styles/_mixins";
+
 .event {
+	user-select: none;
+	word-break: break-all;
+
 	&__date {
 		font-family: "Bebas Neue";
 		color: rgb(var(--color-blue-1000));
@@ -9,5 +14,7 @@
 		margin-top: 15px;
 		color: rgb(var(--color-blue-800));
 		font-size: 20px;
+
+		@include line-clamp(4);
 	}
 }

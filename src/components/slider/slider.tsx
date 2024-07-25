@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { useCallback, useEffect, useRef } from "react";
+import React, { FC, useCallback, useEffect, useRef } from "react";
 import "swiper/css";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 
@@ -7,7 +7,7 @@ import { Icon } from "../icon";
 import { SliderProps } from "./props.interface";
 import styles from "./styles.module.scss";
 
-export const Slider = <T extends unknown>({ slides, children }: SliderProps<T>) => {
+export const Slider: FC<SliderProps> = ({ children }) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
 	const controlPrevEl = useRef<HTMLButtonElement | null>(null);
 	const controlNextEl = useRef<HTMLButtonElement | null>(null);
@@ -49,7 +49,7 @@ export const Slider = <T extends unknown>({ slides, children }: SliderProps<T>) 
 
 	useEffect(() => {
 		updateControls();
-	}, [slides, updateControls]);
+	}, [updateControls]);
 
 	return (
 		<div className={styles.slider}>
@@ -59,13 +59,8 @@ export const Slider = <T extends unknown>({ slides, children }: SliderProps<T>) 
 				slidesPerView={3}
 				grabCursor={true}
 			>
-				{slides.map((slide, index) => (
-					<SwiperSlide
-						key={index}
-						className={styles.slider__slide}
-					>
-						{children(slide)}
-					</SwiperSlide>
+				{React.Children.map(children, (child, index) => (
+					<SwiperSlide>{child}</SwiperSlide>
 				))}
 			</Swiper>
 

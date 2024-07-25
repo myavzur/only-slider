@@ -168,8 +168,13 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 				className={styles.timelapse__events}
 				ref={eventsSliderRef}
 			>
-				<Slider slides={sortedEvents}>
-					{(event) => <EventSlide event={event} />}
+				<Slider>
+					{sortedEvents.map((event, index) => (
+						<EventSlide
+							key={index}
+							event={event}
+						/>
+					))}
 				</Slider>
 			</div>
 		</div>

@@ -1,14 +1,5 @@
-@import "@/assets/styles/_mixins";
-
 .slider {
 	position: relative;
-
-	&__slide {
-		user-select: none;
-		word-break: break-all;
-
-		@include line-clamp(4);
-	}
 
 	&__control {
 		position: absolute;
