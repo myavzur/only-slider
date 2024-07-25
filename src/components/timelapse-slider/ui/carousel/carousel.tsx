@@ -21,7 +21,7 @@ const INACTIVE_DOT_ATTRS: gsap.AttrVars = {
 
 const ACTIVE_DOT_ATTRS: gsap.AttrVars = {
 	r: 25,
-	fill: "#F4F5F9",
+	fill: "rgb(255, 255, 255)",
 	strokeWidth: 1,
 	stroke: "rgb(48, 62, 88, 0.5)"
 }
@@ -149,7 +149,7 @@ export const Carousel = <T extends unknown>({
 					key={index}
 					onClick={() => onSelect(index)}
 				>
-					<circle	r={5}/>
+					<circle	{...INACTIVE_DOT_ATTRS} />
 
 					<text
 						data-gsap-id="text"

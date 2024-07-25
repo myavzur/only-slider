@@ -10,6 +10,7 @@
 		position: absolute;
 		top: 15vh;
 		max-width: 350px;
+		z-index: var(--z-timelapse-title);
 	}
 
 	&__controller {
@@ -26,7 +27,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		width: calc(100% - var(--padding-x) * 2);
-		z-index: 100;
+		z-index: var(--z-timelapse-events-slider);
 	}
 }
 
@@ -55,6 +56,7 @@
 	}
 
 	&__carousel {
+		z-index: var(--z-timelapse-controller-carousel);
 		position: absolute;
 		top: calc(var(--top-offset) + 8px);
 		left: 50%;
@@ -62,6 +64,7 @@
 	}
 
 	.range {
+		z-index: var(--z-timelapse-controller-range);
 		display: flex;
 		align-items: center;
 		gap: 1ch;
@@ -86,6 +89,7 @@
 	}
 
 	&__navigation {
+		z-index: var(--z-timelapse-controller-navigation);
 		position: absolute;
 		bottom: 22.5%;
 		transform: translateY(-50%);
