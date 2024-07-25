@@ -28,11 +28,11 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 	}, [selectedTimelapse]);
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
-	const eventsRangeMinRef = useRef<HTMLSpanElement | null>(null);
-	const eventsRangeMaxRef = useRef<HTMLSpanElement | null>(null);
+	const eventsRangeMinRef = useRef<HTMLParagraphElement | null>(null);
+	const eventsRangeMaxRef = useRef<HTMLParagraphElement | null>(null);
 	const eventsSliderRef = useRef<HTMLDivElement | null>(null);
 
-	const { contextSafe, context } = useGSAP({ scope: containerRef });
+	const { contextSafe } = useGSAP({ scope: containerRef });
 
 	const selectTimelapse = contextSafe(
 		(index: number) => {
@@ -119,21 +119,21 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 						)}
 					/>
 
-					<div className={styles.range}>
-						<span
+					<span className={styles.range}>
+						<p
 							ref={eventsRangeMinRef}
 							className={cn(styles.range__value, styles.range__value_min)}
 						>
 							1024
-						</span>
+						</p>
 
-						<span
+						<p
 							ref={eventsRangeMaxRef}
 							className={cn(styles.range__value, styles.range__value_max)}
 						>
 							2024
-						</span>
-					</div>
+						</p>
+					</span>
 
 					<div className={styles.controller__carousel}>
 						<Carousel
