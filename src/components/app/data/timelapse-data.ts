@@ -3,7 +3,7 @@ import { Timelapse } from "@/components/timelapse-slider/interfaces";
 export const historicalTimelapses: Timelapse[] = [
 	{
 		id: 1,
-		name: "Anteater, giant",
+		label: "Anteater, giant",
 		events: [
 			{
 				date: 2003,
@@ -21,7 +21,7 @@ export const historicalTimelapses: Timelapse[] = [
 	},
 	{
 		id: 2,
-		name: "Coatimundi, ring-tailed",
+		label: "Coatimundi, ring-tailed",
 		events: [
 			{
 				date: 2011,
@@ -35,7 +35,7 @@ export const historicalTimelapses: Timelapse[] = [
 	},
 	{
 		id: 3,
-		name: null,
+		label: null,
 		events: [
 			{
 				date: 2001,
@@ -77,7 +77,7 @@ export const historicalTimelapses: Timelapse[] = [
 	},
 	{
 		id: 4,
-		name: "Peccary, collared",
+		label: "Peccary, collared",
 		events: [
 			{
 				date: 1998,
@@ -95,7 +95,7 @@ export const historicalTimelapses: Timelapse[] = [
 	},
 	{
 		id: 5,
-		name: "Tasmanian devil",
+		label: "Tasmanian devil",
 		events: [
 			{
 				date: 1997,
@@ -117,7 +117,7 @@ export const historicalTimelapses: Timelapse[] = [
 	},
 	{
 		id: 6,
-		name: "Black bear",
+		label: "Black bear",
 		events: [
 			{
 				date: 2009,

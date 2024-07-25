@@ -7,7 +7,6 @@ import { killTweenIfExists, padZero } from "@/helpers";
 
 import { useMatchesWindowWidth } from "@/hooks";
 
-import { Icon } from "@/components/icon";
 import { Slider } from "@/components/slider";
 
 import { findEventsRange } from "./helpers";
@@ -46,7 +45,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 	}, [selectedTimelapse]);
 
 	const shouldRenderCarousel = useMatchesWindowWidth(">", 820);
-	const shouldRenderPagination = useMatchesWindowWidth("<", 420);
+	const isMobileWidth = useMatchesWindowWidth("<", 420);
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const eventsRangeMinRef = useRef<HTMLParagraphElement | null>(null);
@@ -143,8 +142,8 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 
 						<div className={styles.controller__carousel}>
 							<Carousel
-								items={timelapses}
-								selectedIndex={selectedTimelapseIndex}
+								timelapses={timelapses}
+								selectedTimelapseIndex={selectedTimelapseIndex}
 								onSelect={selectTimelapse}
 							/>
 						</div>
@@ -182,7 +181,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 						progress={`${padZero(selectedTimelapseIndex + 1)}/${padZero(timelapses.length)}`}
 					/>
 
-					{shouldRenderPagination && (
+					{isMobileWidth && (
 						<div className={styles.controller__pagination}>
 							<Pagination
 								pages={timelapses.length}
@@ -198,7 +197,9 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 				className={styles.timelapse__events}
 				ref={eventsSliderRef}
 			>
-				<h3 className={styles.timelapse__label}>{selectedTimelapse.name}</h3>
+				{Boolean(isMobileWidth && selectedTimelapse.label) && (
+					<h3 className={styles.timelapse__label}>{selectedTimelapse.label}</h3>
+				)}
 
 				<Slider>
 					{sortedEvents.map((event, index) => (

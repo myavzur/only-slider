@@ -9,25 +9,25 @@ import styles from "./styles.module.scss";
 
 export const Slider: FC<SliderProps> = ({ children }) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
-	const controlPrevEl = useRef<HTMLButtonElement | null>(null);
-	const controlNextEl = useRef<HTMLButtonElement | null>(null);
+	const prevButtonRef = useRef<HTMLButtonElement | null>(null);
+	const nextButtonRef = useRef<HTMLButtonElement | null>(null);
 
 	const updateControls = useCallback(() => {
-		if (!sliderEl.current || !controlPrevEl.current || !controlNextEl.current)
+		if (!sliderEl.current || !prevButtonRef.current || !nextButtonRef.current)
 			return;
 
 		const swiper = sliderEl.current.swiper;
 
 		if (swiper.isBeginning) {
-			controlPrevEl.current.setAttribute("disabled", "true");
+			prevButtonRef.current.setAttribute("disabled", "true");
 		} else {
-			controlPrevEl.current.removeAttribute("disabled");
+			prevButtonRef.current.removeAttribute("disabled");
 		}
 
 		if (swiper.isEnd) {
-			controlNextEl.current.setAttribute("disabled", "true");
+			nextButtonRef.current.setAttribute("disabled", "true");
 		} else {
-			controlNextEl.current.removeAttribute("disabled");
+			nextButtonRef.current.removeAttribute("disabled");
 		}
 	}, []);
 
@@ -75,7 +75,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 			</Swiper>
 
 			<button
-				ref={controlPrevEl}
+				ref={prevButtonRef}
 				className={cn(styles.slider__control, styles.slider__control_prev)}
 				onClick={handleSlidePrev}
 			>
@@ -83,7 +83,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 			</button>
 
 			<button
-				ref={controlNextEl}
+				ref={nextButtonRef}
 				className={cn(styles.slider__control, styles.slider__control_next)}
 				onClick={handleSlideNext}
 			>

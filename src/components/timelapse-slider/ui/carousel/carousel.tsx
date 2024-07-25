@@ -2,7 +2,9 @@ import { useGSAP } from "@gsap/react";
 import cn from "classnames";
 import { gsap } from "gsap";
 import MotionPathPlugin from "gsap/MotionPathPlugin";
-import { useRef } from "react";
+import { FC, useRef } from "react";
+
+import { killTweenIfExists } from "@/helpers";
 
 import { getCircleShapePath } from "./helpers";
 import { CarouselProps } from "./props.interface";
@@ -14,7 +16,7 @@ const CAROUSEL_WIDTH = 1000;
 const CAROUSEL_CENTER_CORD = CAROUSEL_WIDTH / 2;
 const CAROUSEL_RADIUS = CAROUSEL_CENTER_CORD - 230;
 
-const INACTIVE_DOT_ATTRS: gsap.AttrVars = {
+const IDLING_DOT_ATTRS: gsap.AttrVars = {
 	r: 5,
 	fill: "rgb(66, 86, 122)"
 };
@@ -26,25 +28,23 @@ const ACTIVE_DOT_ATTRS: gsap.AttrVars = {
 	stroke: "rgb(48, 62, 88, 0.5)"
 };
 
-export const Carousel = <T extends unknown>({
-	items,
-	selectedIndex,
+const ROTATE_CAROUSEL_TWEEN_ID = "Rotate Carousel";
+
+export const Carousel: FC<CarouselProps> = ({
+	timelapses,
+	selectedTimelapseIndex,
 	onSelect
-}: CarouselProps<T>) => {
+}) => {
 	const containerRef = useRef<SVGSVGElement | null>(null);
 
 	// Позиционирование элементов вокруг круга
 	useGSAP(
 		(context) => {
-			const placeDotsTween = gsap.getById("Place dots");
+			killTweenIfExists("Place dots");
 
-			if (placeDotsTween && placeDotsTween.isActive()) {
-				placeDotsTween.kill();
-			}
-
-			items.forEach((_, index) => {
+			timelapses.forEach((_, index) => {
 				const groupSelector = `g[data-index="${index}"]`;
-				const position = index / items.length - 1;
+				const position = index / timelapses.length - 1;
 
 				gsap.to(groupSelector, {
 					id: "Place dots",
@@ -57,31 +57,29 @@ export const Carousel = <T extends unknown>({
 					},
 					paused: true,
 					onComplete: () => {
+						// Очищаем контекст, поскольку больше от этой анимации смысла не будет.
 						context.kill();
 					}
 				});
 			});
 		},
-		{ scope: containerRef, dependencies: [items] }
+		{ scope: containerRef, dependencies: [timelapses] }
 	);
 
 	// Прокрутка к выбранному элементу
-	useGSAP(
+	const { contextSafe } = useGSAP(
 		(context) => {
 			const containerEl = containerRef.current;
-			const currentGroupSelector = `g[data-index="${selectedIndex}"]`;
+			const currentGroupSelector = `g[data-index="${selectedTimelapseIndex}"]`;
 
-			const angle = (360 / items.length) * selectedIndex;
+			const angle = (360 / timelapses.length) * selectedTimelapseIndex;
 			const finalAngle = angle - 115;
 
-			const rotateCarouselTween = gsap.getById("Rotate carousel");
-			if (rotateCarouselTween && rotateCarouselTween.isActive()) {
-				rotateCarouselTween.kill();
-			}
+			killTweenIfExists(ROTATE_CAROUSEL_TWEEN_ID);
 
 			gsap
 				.timeline({
-					id: "Rotate carousel",
+					id: ROTATE_CAROUSEL_TWEEN_ID,
 					onComplete: () => {
 						context.kill();
 					}
@@ -100,7 +98,7 @@ export const Carousel = <T extends unknown>({
 				.to(
 					["g", "circle"],
 					{
-						attr: INACTIVE_DOT_ATTRS
+						attr: IDLING_DOT_ATTRS
 					},
 					"<"
 				)
@@ -122,8 +120,41 @@ export const Carousel = <T extends unknown>({
 					"<"
 				);
 		},
-		{ scope: containerRef, dependencies: [selectedIndex] }
+		{ scope: containerRef, dependencies: [selectedTimelapseIndex] }
 	);
+
+	const animateDot = contextSafe((index: number, to: "active" | "idle") => {
+		const rotateCarouselTween = gsap.getById(ROTATE_CAROUSEL_TWEEN_ID);
+		if (rotateCarouselTween?.isActive()) {
+			return;
+		}
+
+		const groupSelector = `g[data-index="${index}"]`;
+		gsap
+			.timeline({
+				onComplete: function () {
+					this.kill();
+				}
+			})
+			.to([groupSelector, `${groupSelector}>circle`], {
+				attr: to === "active" ? ACTIVE_DOT_ATTRS : IDLING_DOT_ATTRS
+			})
+			.to(
+				`${groupSelector}>text`,
+				{
+					opacity: to === "active" ? 1 : 0
+				},
+				"<"
+			);
+	});
+
+	const handleGroupHover = contextSafe((index: number) => {
+		animateDot(index, "active");
+	});
+
+	const handleGroupBlur = contextSafe((index: number) => {
+		animateDot(index, "idle");
+	});
 
 	return (
 		<svg
@@ -144,14 +175,16 @@ export const Carousel = <T extends unknown>({
 				])}
 			/>
 
-			{items.map((item, index) => (
+			{timelapses.map((_, index) => (
 				<g
+					key={index}
 					data-index={index}
 					className={cn(styles.canvas__group)}
-					key={index}
 					onClick={() => onSelect(index)}
+					onMouseEnter={() => handleGroupHover(index)}
+					onMouseLeave={() => handleGroupBlur(index)}
 				>
-					<circle {...INACTIVE_DOT_ATTRS} />
+					<circle {...IDLING_DOT_ATTRS} />
 
 					<text
 						data-gsap-id="text"

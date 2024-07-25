@@ -1,3 +1,5 @@
+@import "@/assets/styles/_mixins";
+
 .navigation {
 	&__progress {
 		color: rgb(var(--color-blue-800));

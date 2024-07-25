@@ -5,6 +5,6 @@ export interface TimelapseEvent {
 
 export interface Timelapse {
 	id: number;
-	name?: string | null;
+	label?: string | null;
 	events: TimelapseEvent[];
 }

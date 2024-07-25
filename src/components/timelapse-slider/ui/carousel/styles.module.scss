@@ -15,6 +15,7 @@
 		font-family: "PT Sans";
 		fill: rgb(var(--color-blue-900));
 		user-select: none;
+		pointer-events: none;
 	}
 
 	&__label {
