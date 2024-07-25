@@ -1,19 +1,26 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import cn from "classnames";
-import styles from "./styles.module.scss";
-import { TimelapseSliderProps } from "./props.interface";
-import { killTweenIfExists, padZero } from "@/helpers";
-import { Carousel } from "./ui/carousel";
-import { Icon } from "@/components/icon";
-import { gsap } from "gsap";
-import { Slider } from "@/components/slider";
-import { Title } from "./ui/title";
-import { findEventsRange } from "./helpers";
-import { Navigation } from "./ui/navigation";
-import { EventSlide } from "./ui/event-slide";
 import { useGSAP } from "@gsap/react";
+import cn from "classnames";
+import { gsap } from "gsap";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, defaultSelected}) => {
+import { killTweenIfExists, padZero } from "@/helpers";
+
+import { Icon } from "@/components/icon";
+import { Slider } from "@/components/slider";
+
+import { findEventsRange } from "./helpers";
+import { TimelapseSliderProps } from "./props.interface";
+import styles from "./styles.module.scss";
+import { Carousel } from "./ui/carousel";
+import { EventSlide } from "./ui/event-slide";
+import { Navigation } from "./ui/navigation";
+import { Title } from "./ui/title";
+
+export const TimelapseSlider: FC<TimelapseSliderProps> = ({
+	title,
+	timelapses,
+	defaultSelected
+}) => {
 	const [selectedTimelapse, setSelectedTimelapse] = useState(() => {
 		if (!defaultSelected) return timelapses[0];
 		return defaultSelected;
@@ -23,7 +30,9 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, de
 		const index = timelapses.findIndex(({ id }) => id === selectedTimelapse.id);
 
 		if (index === -1) {
-			throw new Error(`Wrong Timelapse Slider configuration. Could not find timelapse with id ${selectedTimelapse.id} in timelapses array.`);
+			throw new Error(
+				`Wrong Timelapse Slider configuration. Could not find timelapse with id ${selectedTimelapse.id} in timelapses array.`
+			);
 		}
 
 		return index;
@@ -42,8 +51,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, de
 
 	const { contextSafe } = useGSAP({ scope: containerRef });
 
-	const selectTimelapse = contextSafe(
-		(index: number) => {
+	const selectTimelapse = contextSafe((index: number) => {
 		const newTimelapse = timelapses[index];
 		const isAlreadySelected = selectedTimelapseIndex === index;
 		if (isAlreadySelected || !newTimelapse) return;
@@ -52,18 +60,16 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, de
 		setSelectedTimelapseIndex(index);
 
 		killTweenIfExists("Animate slider and range");
-		gsap.timeline({ id: "Animate slider and range" })
-			.to(
-				eventsSliderRef.current,
-				{
-					opacity: 0,
-					y: 10,
-					ease: "power4.out",
-					onComplete: () => {
-						setSelectedTimelapse(newTimelapse);
-					}
+		gsap
+			.timeline({ id: "Animate slider and range" })
+			.to(eventsSliderRef.current, {
+				opacity: 0,
+				y: 10,
+				ease: "power4.out",
+				onComplete: () => {
+					setSelectedTimelapse(newTimelapse);
 				}
-			)
+			})
 			.to(
 				eventsRangeMinRef.current,
 				{
@@ -84,13 +90,10 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, de
 				},
 				"<"
 			)
-			.to(
-				eventsSliderRef.current,
-				{
-					opacity: 1,
-					y: 10
-				}
-			);
+			.to(eventsSliderRef.current, {
+				opacity: 1,
+				y: 10
+			});
 	});
 
 	const prevTimelapse = useCallback(() => {
@@ -113,64 +116,62 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, de
 	}, []);
 
 	return (
-		<div className={styles.timelapse} ref={containerRef}>
-				<Title className={styles.timelapse__title}>{title}</Title>
+		<div
+			className={styles.timelapse}
+			ref={containerRef}
+		>
+			<Title className={styles.timelapse__title}>{title}</Title>
 
-				<div className={cn(styles.timelapse__controller, styles.controller)}>
-					<div
-						className={cn(styles.controller__line, styles.controller__line_vertical)}
-					/>
-					<div
-						className={cn(
-							styles.controller__line,
-							styles.controller__line_horizontal
-						)}
-					/>
-
-					<span className={styles.range}>
-						<p
-							ref={eventsRangeMinRef}
-							className={cn(styles.range__value, styles.range__value_min)}
-						>
-							1024
-						</p>
-
-						<p
-							ref={eventsRangeMaxRef}
-							className={cn(styles.range__value, styles.range__value_max)}
-						>
-							2024
-						</p>
-					</span>
-
-					<div className={styles.controller__carousel}>
-						<Carousel
-							items={timelapses}
-							selectedIndex={selectedTimelapseIndex}
-							onSelect={selectTimelapse}
-						/>
-					</div>
-
-					<Navigation
-						className={styles.controller__navigation}
-						onPrev={prevTimelapse}
-						isPrevDisabled={selectedTimelapseIndex === 0}
-						onNext={nextTimelapse}
-						isNextDisabled={selectedTimelapseIndex === timelapses.length - 1}
-						progress={progress}
-					/>
-				</div>
-
+			<div className={cn(styles.timelapse__controller, styles.controller)}>
 				<div
-					className={styles.timelapse__events}
-					ref={eventsSliderRef}
-				>
-					<Slider slides={sortedEvents}>
-						{(event) => (
-							<EventSlide event={event} />
-						)}
-					</Slider>
+					className={cn(styles.controller__line, styles.controller__line_vertical)}
+				/>
+				<div
+					className={cn(styles.controller__line, styles.controller__line_horizontal)}
+				/>
+
+				<span className={styles.range}>
+					<p
+						ref={eventsRangeMinRef}
+						className={cn(styles.range__value, styles.range__value_min)}
+					>
+						1024
+					</p>
+
+					<p
+						ref={eventsRangeMaxRef}
+						className={cn(styles.range__value, styles.range__value_max)}
+					>
+						2024
+					</p>
+				</span>
+
+				<div className={styles.controller__carousel}>
+					<Carousel
+						items={timelapses}
+						selectedIndex={selectedTimelapseIndex}
+						onSelect={selectTimelapse}
+					/>
 				</div>
+
+				<Navigation
+					className={styles.controller__navigation}
+					onPrev={prevTimelapse}
+					isPrevDisabled={selectedTimelapseIndex === 0}
+					onNext={nextTimelapse}
+					isNextDisabled={selectedTimelapseIndex === timelapses.length - 1}
+					progress={progress}
+				/>
 			</div>
-	)
-}
+
+			<div
+				className={styles.timelapse__events}
+				ref={eventsSliderRef}
+			>
+				<Slider slides={sortedEvents}>
+					{(event) => <EventSlide event={event} />}
+				</Slider>
+			</div>
+		</div>
+	);
+};
