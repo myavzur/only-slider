@@ -114,6 +114,8 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 		const eventsRange = findEventsRange(selectedTimelapse);
 		eventsRangeMinRef.current.innerText = String(eventsRange.min);
 		eventsRangeMaxRef.current.innerText = String(eventsRange.max);
+
+		// eslint-disable-next-line
 	}, []);
 
 	return (

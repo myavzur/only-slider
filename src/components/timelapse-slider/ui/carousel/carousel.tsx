@@ -6,6 +6,8 @@ import { FC, useRef } from "react";
 
 import { killTweenIfExists } from "@/helpers";
 
+import { useFirstRender } from "@/hooks";
+
 import { getCircleShapePath } from "./helpers";
 import { CarouselProps } from "./props.interface";
 import styles from "./styles.module.scss";
@@ -35,19 +37,20 @@ export const Carousel: FC<CarouselProps> = ({
 	selectedTimelapseIndex,
 	onSelect
 }) => {
+	const isFirstRender = useFirstRender();
 	const containerRef = useRef<SVGSVGElement | null>(null);
 
 	// Позиционирование элементов вокруг круга
 	useGSAP(
 		(context) => {
-			killTweenIfExists("Place dots");
+			killTweenIfExists("Carousel Init");
 
 			timelapses.forEach((_, index) => {
 				const groupSelector = `g[data-index="${index}"]`;
 				const position = index / timelapses.length - 1;
 
 				gsap.to(groupSelector, {
-					id: "Place dots",
+					id: "Carousel Init",
 					immediateRender: true,
 					motionPath: {
 						path: "path",
@@ -85,11 +88,12 @@ export const Carousel: FC<CarouselProps> = ({
 					}
 				})
 				.to(containerEl, {
-					duration: 1,
+					duration: isFirstRender ? 0 : 1,
 					rotate: -finalAngle,
 					transformOrigin: "center center",
 					onUpdate: () => {
 						gsap.to("g", {
+							duration: isFirstRender ? 0 : 1,
 							rotate: finalAngle,
 							transformOrigin: "center center"
 						});
@@ -98,6 +102,7 @@ export const Carousel: FC<CarouselProps> = ({
 				.to(
 					["g", "circle"],
 					{
+						duration: isFirstRender ? 0 : 1,
 						attr: IDLING_DOT_ATTRS
 					},
 					"<"
@@ -105,16 +110,19 @@ export const Carousel: FC<CarouselProps> = ({
 				.to(
 					["text"],
 					{
+						duration: isFirstRender ? 0 : 1,
 						opacity: 0
 					},
 					"<"
 				)
 				.to([currentGroupSelector, `${currentGroupSelector}>circle`], {
+					duration: isFirstRender ? 0 : 1,
 					attr: ACTIVE_DOT_ATTRS
 				})
 				.to(
 					`${currentGroupSelector}>text`,
 					{
+						duration: isFirstRender ? 0 : 1,
 						opacity: 1
 					},
 					"<"
