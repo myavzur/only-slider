@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export interface PageTitleProps {
+export interface TitleProps {
 	children: ReactNode;
 	className?: string;
 }

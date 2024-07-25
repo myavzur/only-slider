@@ -1,0 +1,21 @@
+.title {
+	color: rgb(var(--color-blue-800));
+	padding-left: var(--padding-x);
+
+	&__heading {
+		font-size: 56px;
+		font-weight: 700;
+	}
+
+	&::before {
+		position: absolute;
+		left: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		content: "";
+		display: block;
+		height: calc(100% - 25px);
+		width: 5px;
+		background: linear-gradient(to bottom, rgb(var(--color-blue-1000)) 0%, rgb(var(--color-pink-1000)) 100%);
+	}
+}

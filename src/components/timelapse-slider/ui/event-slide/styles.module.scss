@@ -1,0 +1,13 @@
+.event {
+	&__date {
+		font-family: "Bebas Neue";
+		color: rgb(var(--color-blue-1000));
+		font-size: 25px;
+	}
+
+	&__text {
+		margin-top: 15px;
+		color: rgb(var(--color-blue-800));
+		font-size: 20px;
+	}
+}
