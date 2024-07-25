@@ -85,21 +85,21 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) =
 			);
 	});
 
-	const prevTimelapse = () => {
+	const prevTimelapse = useCallback(() => {
 		if (selectedTimelapseIndex === 0) return;
 		selectTimelapse(selectedTimelapseIndex - 1);
-	};
+	}, [selectedTimelapseIndex, selectTimelapse]);
 
-	const nextTimelapse = () => {
+	const nextTimelapse = useCallback(() => {
 		if (selectedTimelapseIndex === timelapses.length - 1) return;
 		selectTimelapse(selectedTimelapseIndex + 1);
-	};
+	}, [selectedTimelapseIndex, selectTimelapse, timelapses]);
 
-	// Render initial timelapse range values
+	// Render initial events range values.
 	useEffect(() => {
-		const eventsRange = findEventsRange(selectedTimelapse);
-
 		if (!eventsRangeMinRef.current || !eventsRangeMaxRef.current) return;
+
+		const eventsRange = findEventsRange(selectedTimelapse);
 		eventsRangeMinRef.current.innerText = String(eventsRange.min);
 		eventsRangeMaxRef.current.innerText = String(eventsRange.max);
 	}, []);
