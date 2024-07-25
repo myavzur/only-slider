@@ -1,0 +1,19 @@
+.pagination {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+
+	&__dot {
+		padding: 0;
+		width: 6px;
+		height: 6px;
+		background-color: rgb(var(--color-blue-800));
+		opacity: 0.4;
+		transition: opacity 300ms;
+		border-radius: 50%;
+
+		&_active {
+			opacity: 1;
+		}
+	}
+}

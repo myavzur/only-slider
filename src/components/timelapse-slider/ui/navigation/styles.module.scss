@@ -29,3 +29,18 @@
 		}
 	}
 }
+
+@media screen and (max-width: 420px) {
+	.navigation {
+		&__controls {
+			padding-top: 10px;
+			gap: 10px;
+		}
+
+		&__control {
+			height: 25px;
+			width: 25px;
+			padding: 7px;
+		}
+	}
+}

@@ -11,11 +11,10 @@ export const Navigation: FC<NavigationProps> = ({
 	isPrevDisabled,
 	onNext,
 	isNextDisabled,
-	progress,
-	className
+	progress
 }) => {
 	return (
-		<div className={cn(styles.navigation, className)}>
+		<div className={cn(styles.navigation)}>
 			<span className={styles.navigation__progress}>{progress}</span>
 
 			<div className={styles.navigation__controls}>

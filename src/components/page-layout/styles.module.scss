@@ -1,8 +1,10 @@
 .page {
-	--container-width: 1440px;
+	--container-width: min(1440px, 100%);
 
 	width: 100vw;
 	height: 100vh;
+	max-height: 100%;
+	overflow-x: hidden;
 
 	display: grid;
 	grid-template-columns: 2fr var(--container-width) 1fr;
@@ -14,6 +16,5 @@
 	&__container {
 		height: 100%;
 		width: var(--container-width);
-		overflow: hidden;
 	}
 }

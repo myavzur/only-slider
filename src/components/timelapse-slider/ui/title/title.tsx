@@ -6,8 +6,8 @@ import styles from "./styles.module.scss";
 
 export const Title: FC<TitleProps> = ({ children, className }) => {
 	return (
-		<div className={cn(styles.title, className)}>
+		<span className={cn(styles.title, className)}>
 			<h1 className={styles.title__heading}>{children}</h1>
-		</div>
+		</span>
 	);
 };

@@ -2,7 +2,7 @@ import { useGSAP } from "@gsap/react";
 import cn from "classnames";
 import { gsap } from "gsap";
 import MotionPathPlugin from "gsap/MotionPathPlugin";
-import { SVGAttributes, useRef } from "react";
+import { useRef } from "react";
 
 import { getCircleShapePath } from "./helpers";
 import { CarouselProps } from "./props.interface";

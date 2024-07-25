@@ -1,16 +1,17 @@
 .timelapse {
-	--padding-x: 80px;
+	--padding-x: clamp(20px, 6vw, 80px);
 	--border: 1px solid rgba(var(--color-blue-800), 10%);
 
 	position: relative;
 	border: var(--border);
 	height: 100%;
+	overflow: hidden;
 
 	&__title {
 		position: absolute;
 		top: 15vh;
-		max-width: 350px;
 		z-index: var(--z-timelapse-title);
+		width: clamp(125px, 45vw, 350px);
 	}
 
 	&__controller {
@@ -39,7 +40,8 @@
 
 	&__line {
 		position: absolute;
-		background-color: rgba(var(--color-blue-800), 10%); // COLORS.
+		background-color: rgba(var(--color-blue-800), 10%);
+
 		&_horizontal {
 			height: 1px;
 			width: 100%;
@@ -63,21 +65,21 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.range {
+	&__range {
 		z-index: var(--z-timelapse-controller-range);
 		display: flex;
 		align-items: center;
 		gap: 1ch;
 		user-select: none;
-
-		font-size: 200px;
-		font-weight: 700;
+		font-size: clamp(56px, 15vw, 200px);
 		position: absolute;
 		top: var(--top-offset);
 		left: 50%;
 		transform: translate(-50%, -50%);
 
-		&__value {
+		&-value {
+			font-weight: 700;
+
 			&_min {
 				color: rgb(var(--color-blue-900));
 			}
@@ -88,11 +90,54 @@
 		}
 	}
 
-	&__navigation {
-		z-index: var(--z-timelapse-controller-navigation);
+	&__controls {
+		z-index: var(--z-timelapse-controller-controls);
 		position: absolute;
 		bottom: 22.5%;
 		transform: translateY(-50%);
 		left: var(--padding-x);
+	}
+}
+
+// Mobile
+@media screen and (max-width: 420px) {
+	.timelapse {
+		&__title {
+			top: 10%;
+		}
+
+		&__label {
+			position: absolute;
+			left: 0;
+			bottom: calc(100% + 15px);
+			color: rgba(var(--color-blue-800));
+			font-size: 20px;
+		}
+
+		&__events {
+			bottom: clamp(15%, 40vh, 35%);
+			transform: translate(-50%, 50%);
+			border-top: 1px solid rgb(var(--color-white-800));
+			padding-top: 20px;
+		}
+	}
+
+	.controller {
+		&__range {
+			top: 31%;
+		}
+
+		&__controls {
+			bottom: 20px;
+			transform: none;
+			display: grid;
+			align-items: center;
+			grid-template-columns: repeat(3, 1fr);
+			width: calc(100% - var(--padding-x) * 2);
+		}
+
+		&__pagination {
+			grid-column: span 1;
+		}
 	}
 }

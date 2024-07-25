@@ -1,13 +1,15 @@
 @import "@/assets/styles/_mixins";
 
 .event {
-	user-select: none;
 	word-break: break-all;
+	pointer-events: none;
+	user-select: none;
 
 	&__date {
 		font-family: "Bebas Neue";
 		color: rgb(var(--color-blue-1000));
 		font-size: 25px;
+		font-weight: 400;
 	}
 
 	&__text {
@@ -16,5 +18,11 @@
 		font-size: 20px;
 
 		@include line-clamp(4);
+	}
+}
+
+@media screen and (max-width: 920px) {
+	.event {
+		width: 80%;
 	}
 }

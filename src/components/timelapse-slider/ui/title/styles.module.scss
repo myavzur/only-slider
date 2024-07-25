@@ -1,9 +1,11 @@
+@import "@/assets/styles/_mixins";
+
 .title {
 	color: rgb(var(--color-blue-800));
 	padding-left: var(--padding-x);
 
 	&__heading {
-		font-size: 56px;
+		font-size: clamp(20px, 5vw, 56px);
 		font-weight: 700;
 	}
 
@@ -17,5 +19,13 @@
 		height: calc(100% - 25px);
 		width: 5px;
 		background: linear-gradient(to bottom, rgb(var(--color-blue-1000)) 0%, rgb(var(--color-pink-1000)) 100%);
+	}
+}
+
+@media screen and (max-width: 720px) {
+	.title {
+		&::before {
+			display: none;
+		}
 	}
 }

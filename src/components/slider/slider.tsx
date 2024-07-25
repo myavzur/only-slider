@@ -55,9 +55,19 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 		<div className={styles.slider}>
 			<Swiper
 				ref={sliderEl}
-				spaceBetween={80}
-				slidesPerView={3}
+				slidesPerView="auto"
+				spaceBetween={25}
 				grabCursor={true}
+				breakpoints={{
+					920: {
+						slidesPerView: 2,
+						spaceBetween: 40
+					},
+					1280: {
+						slidesPerView: 3,
+						spaceBetween: 80
+					}
+				}}
 			>
 				{React.Children.map(children, (child, index) => (
 					<SwiperSlide>{child}</SwiperSlide>

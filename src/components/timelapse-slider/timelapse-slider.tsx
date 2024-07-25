@@ -5,6 +5,8 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { killTweenIfExists, padZero } from "@/helpers";
 
+import { useMatchesWindowWidth } from "@/hooks";
+
 import { Icon } from "@/components/icon";
 import { Slider } from "@/components/slider";
 
@@ -14,6 +16,7 @@ import styles from "./styles.module.scss";
 import { Carousel } from "./ui/carousel";
 import { EventSlide } from "./ui/event-slide";
 import { Navigation } from "./ui/navigation";
+import { Pagination } from "./ui/pagination";
 import { Title } from "./ui/title";
 
 export const TimelapseSlider: FC<TimelapseSliderProps> = ({
@@ -38,11 +41,12 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 		return index;
 	});
 
-	const progress = `${padZero(selectedTimelapseIndex + 1)}/${padZero(timelapses.length)}`;
-
 	const sortedEvents = useMemo(() => {
 		return selectedTimelapse.events.sort((a, b) => a.date - b.date);
 	}, [selectedTimelapse]);
+
+	const shouldRenderCarousel = useMatchesWindowWidth(">", 820);
+	const shouldRenderPagination = useMatchesWindowWidth("<", 420);
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const eventsRangeMinRef = useRef<HTMLParagraphElement | null>(null);
@@ -64,7 +68,6 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 			.timeline({ id: "Animate slider and range" })
 			.to(eventsSliderRef.current, {
 				opacity: 0,
-				y: 10,
 				ease: "power4.out",
 				onComplete: () => {
 					setSelectedTimelapse(newTimelapse);
@@ -91,8 +94,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 				"<"
 			)
 			.to(eventsSliderRef.current, {
-				opacity: 1,
-				y: 10
+				opacity: 1
 			});
 	});
 
@@ -123,51 +125,81 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 			<Title className={styles.timelapse__title}>{title}</Title>
 
 			<div className={cn(styles.timelapse__controller, styles.controller)}>
-				<div
-					className={cn(styles.controller__line, styles.controller__line_vertical)}
-				/>
-				<div
-					className={cn(styles.controller__line, styles.controller__line_horizontal)}
-				/>
+				{shouldRenderCarousel && (
+					<>
+						<div
+							className={cn(
+								styles.controller__line,
+								styles.controller__line_vertical
+							)}
+						/>
 
-				<span className={styles.range}>
+						<div
+							className={cn(
+								styles.controller__line,
+								styles.controller__line_horizontal
+							)}
+						/>
+
+						<div className={styles.controller__carousel}>
+							<Carousel
+								items={timelapses}
+								selectedIndex={selectedTimelapseIndex}
+								onSelect={selectTimelapse}
+							/>
+						</div>
+					</>
+				)}
+
+				<span className={styles.controller__range}>
 					<p
 						ref={eventsRangeMinRef}
-						className={cn(styles.range__value, styles.range__value_min)}
+						className={cn(
+							styles["controller__range-value"],
+							styles["controller__range-value_min"]
+						)}
 					>
 						1024
 					</p>
 
 					<p
 						ref={eventsRangeMaxRef}
-						className={cn(styles.range__value, styles.range__value_max)}
+						className={cn(
+							styles["controller__range-value"],
+							styles["controller__range-value_max"]
+						)}
 					>
 						2024
 					</p>
 				</span>
 
-				<div className={styles.controller__carousel}>
-					<Carousel
-						items={timelapses}
-						selectedIndex={selectedTimelapseIndex}
-						onSelect={selectTimelapse}
+				<div className={styles.controller__controls}>
+					<Navigation
+						onPrev={prevTimelapse}
+						isPrevDisabled={selectedTimelapseIndex === 0}
+						onNext={nextTimelapse}
+						isNextDisabled={selectedTimelapseIndex === timelapses.length - 1}
+						progress={`${padZero(selectedTimelapseIndex + 1)}/${padZero(timelapses.length)}`}
 					/>
-				</div>
 
-				<Navigation
-					className={styles.controller__navigation}
-					onPrev={prevTimelapse}
-					isPrevDisabled={selectedTimelapseIndex === 0}
-					onNext={nextTimelapse}
-					isNextDisabled={selectedTimelapseIndex === timelapses.length - 1}
-					progress={progress}
-				/>
+					{shouldRenderPagination && (
+						<div className={styles.controller__pagination}>
+							<Pagination
+								pages={timelapses.length}
+								onClick={selectTimelapse}
+								selectedIndex={selectedTimelapseIndex}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 
 			<div
 				className={styles.timelapse__events}
 				ref={eventsSliderRef}
 			>
+				<h3 className={styles.timelapse__label}>{selectedTimelapse.name}</h3>
+
 				<Slider>
 					{sortedEvents.map((event, index) => (
 						<EventSlide

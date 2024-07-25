@@ -1,4 +1,7 @@
 .slider {
+	--control-position: calc(100% + 15px);
+
+	width: 100%;
 	position: relative;
 
 	&__control {
@@ -21,11 +24,25 @@
 		}
 
 		&_prev {
-			right: calc(100% + 20px);
+			right: var(--control-position);
 		}
 
 		&_next {
-			left: calc(100% + 20px);
+			left: var(--control-position);
+		}
+	}
+}
+
+@media screen and (max-width: 1280px) {
+	.slider {
+		--control-position: calc(100% + 5px);
+	}
+}
+
+@media screen and (max-width: 920px) {
+	.slider {
+		&__control {
+			display: none;
 		}
 	}
 }
