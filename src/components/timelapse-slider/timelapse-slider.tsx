@@ -13,11 +13,19 @@ import { Navigation } from "./ui/navigation";
 import { EventSlide } from "./ui/event-slide";
 import { useGSAP } from "@gsap/react";
 
-export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses}) => {
-	const [selectedTimelapse, setSelectedTimelapse] = useState(timelapses[0]);
+export const TimelapseSlider: FC<TimelapseSliderProps> = ({title, timelapses, defaultSelected}) => {
+	const [selectedTimelapse, setSelectedTimelapse] = useState(() => {
+		if (!defaultSelected) return timelapses[0];
+		return defaultSelected;
+	});
 
 	const [selectedTimelapseIndex, setSelectedTimelapseIndex] = useState(() => {
 		const index = timelapses.findIndex(({ id }) => id === selectedTimelapse.id);
+
+		if (index === -1) {
+			throw new Error(`Wrong Timelapse Slider configuration. Could not find timelapse with id ${selectedTimelapse.id} in timelapses array.`);
+		}
+
 		return index;
 	});
 
