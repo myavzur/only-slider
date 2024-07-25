@@ -23,7 +23,7 @@
 		padding: 15px;
 		background-color: rgb(var(--color-white-1000));
 		color: rgb(var(--color-blue-1000));
-		box-shadow: 0 0 15px 0 rgba(var(--color-blue-1000), 10%);
+		box-shadow: 0 0 15px 0 rgba(var(--color-blue-1000), 0.25);
 
 		&:disabled {
 			display: none;
