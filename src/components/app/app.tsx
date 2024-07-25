@@ -6,7 +6,7 @@ import { historicalTimelapses } from "./data";
 export const App = () => {
 	return (
 		<PageLayout>
-			<TimelapseSlider title="Исторические даты" timelapses={historicalTimelapses} />
+			<TimelapseSlider title="Исторические даты" timelapses={historicalTimelapses} defaultSelected={historicalTimelapses[4]} />
 		</PageLayout>
 	);
 };
