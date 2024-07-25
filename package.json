@@ -70,7 +70,8 @@
 		"start": "node scripts/start.js",
 		"build": "node scripts/build.js",
 		"test": "node scripts/test.js",
-		"format": "prettier --write \"src/**/*.{ts,tsx}\""
+		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
+		"prepare": "husky"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -92,6 +93,7 @@
 	},
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"lint-staged": "^15.2.7",
 		"prettier": "^3.3.3",
 		"sass": "^1.77.8"
 	},
