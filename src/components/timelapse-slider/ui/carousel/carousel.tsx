@@ -73,7 +73,7 @@ export const Carousel: FC<CarouselProps> = ({
 	const { contextSafe } = useGSAP(
 		() => {
 			const angle = (360 / timelapses.length) * selectedTimelapseIndex;
-			const finalAngle = angle - 115;
+			const finalAngle = angle - 120;
 
 			const containerEl = containerRef.current;
 			const selectedDot = `g[data-index="${selectedTimelapseIndex}"]`;
