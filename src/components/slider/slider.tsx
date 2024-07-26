@@ -49,7 +49,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 
 	useEffect(() => {
 		updateControls();
-	}, [updateControls]);
+	}, [updateControls, children]);
 
 	return (
 		<div className={styles.slider}>
@@ -68,6 +68,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 						spaceBetween: 80
 					}
 				}}
+				onSliderMove={updateControls}
 			>
 				{React.Children.map(children, (child, index) => (
 					<SwiperSlide>{child}</SwiperSlide>
