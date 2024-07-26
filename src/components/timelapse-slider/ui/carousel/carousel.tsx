@@ -138,6 +138,8 @@ export const Carousel: FC<CarouselProps> = ({
 	);
 
 	const animateDot = contextSafe((index: number, to: "active" | "idle") => {
+		if (selectedTimelapseIndex === index) return;
+
 		const rotateCarouselTween = gsap.getById(ROTATE_CAROUSEL_TWEEN_ID);
 		if (rotateCarouselTween?.isActive()) return;
 
