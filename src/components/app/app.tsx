@@ -1,7 +1,7 @@
 import { PageLayout } from "@/components/page-layout";
 import { TimelapseSlider } from "@/components/timelapse-slider";
 
-import { Slider } from "../slider";
+import { Slider } from "../timelapse-slider/ui/slider";
 import { historicalTimelapses } from "./data";
 
 export const App = () => {

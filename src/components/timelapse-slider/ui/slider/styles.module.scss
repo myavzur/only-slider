@@ -6,6 +6,10 @@
 	width: 100%;
 	position: relative;
 
+	&__slide {
+		width: 80%;
+	}
+
 	&__control {
 		position: absolute;
 		top: 50%;

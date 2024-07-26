@@ -3,11 +3,12 @@ import React, { FC, useCallback, useEffect, useRef } from "react";
 import "swiper/css";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 
-import { Icon } from "../icon";
+import { Icon } from "@/components/icon";
+
 import { SliderProps } from "./props.interface";
 import styles from "./styles.module.scss";
 
-export const Slider: FC<SliderProps> = ({ children }) => {
+export const Slider: FC<SliderProps> = ({ children, isMobile }) => {
 	const sliderEl = useRef<SwiperRef | null>(null);
 	const prevButtonRef = useRef<HTMLButtonElement | null>(null);
 	const nextButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -56,7 +57,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 			<Swiper
 				ref={sliderEl}
 				slidesPerView="auto"
-				spaceBetween={25}
+				spaceBetween={0}
 				grabCursor={true}
 				breakpoints={{
 					920: {
@@ -71,7 +72,7 @@ export const Slider: FC<SliderProps> = ({ children }) => {
 				onSliderMove={updateControls}
 			>
 				{React.Children.map(children, (child, index) => (
-					<SwiperSlide>{child}</SwiperSlide>
+					<SwiperSlide className={styles.slider__slide}>{child}</SwiperSlide>
 				))}
 			</Swiper>
 

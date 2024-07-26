@@ -7,7 +7,7 @@ import { killTweenIfExists, padZero } from "@/helpers";
 
 import { useMatchesWindowWidth } from "@/hooks";
 
-import { Slider } from "@/components/slider";
+import { Slider } from "@/components/timelapse-slider/ui/slider";
 
 import { findEventsRange } from "./helpers";
 import { TimelapseSliderProps } from "./props.interface";
@@ -203,7 +203,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 					<h3 className={styles.timelapse__label}>{selectedTimelapse.label}</h3>
 				)}
 
-				<Slider>
+				<Slider isMobile={isMobileWidth}>
 					{sortedEvents.map((event, index) => (
 						<EventSlide
 							key={index}
