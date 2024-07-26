@@ -48,11 +48,28 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 	const isMobileWidth = useMatchesWindowWidth("<", 420);
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
-	const eventsRangeMinRef = useRef<HTMLParagraphElement | null>(null);
-	const eventsRangeMaxRef = useRef<HTMLParagraphElement | null>(null);
-	const eventsSliderRef = useRef<HTMLDivElement | null>(null);
 
-	const { contextSafe } = useGSAP({ scope: containerRef });
+	const { contextSafe } = useGSAP(
+		() => {
+			const timeline = gsap.timeline();
+			const eventsRange = findEventsRange(selectedTimelapse);
+
+			timeline.to("#range-min", {
+				innerText: String(eventsRange.min),
+				duration: 0
+			});
+
+			timeline.to(
+				"#range-max",
+				{
+					innerText: String(eventsRange.max),
+					duration: 0
+				},
+				"<"
+			);
+		},
+		{ dependencies: [], scope: containerRef }
+	);
 
 	const selectTimelapse = contextSafe((index: number) => {
 		const newTimelapse = timelapses[index];
@@ -63,38 +80,41 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 		setSelectedTimelapseIndex(index);
 
 		killTweenIfExists("Animate slider and range");
-		gsap
-			.timeline({ id: "Animate slider and range" })
-			.to(eventsSliderRef.current, {
-				opacity: 0,
+		const timeline = gsap.timeline({ id: "Animate slider and range" });
+
+		timeline.to("#events-slider", {
+			opacity: 0,
+			ease: "power4.out",
+			onComplete: () => {
+				setSelectedTimelapse(newTimelapse);
+			}
+		});
+
+		timeline.to(
+			"#range-min",
+			{
+				innerText: eventsRange.min,
+				snap: "innerText",
 				ease: "power4.out",
-				onComplete: () => {
-					setSelectedTimelapse(newTimelapse);
-				}
-			})
-			.to(
-				eventsRangeMinRef.current,
-				{
-					innerText: eventsRange.min,
-					snap: "innerText",
-					ease: "power4.out",
-					duration: 1
-				},
-				"<"
-			)
-			.to(
-				eventsRangeMaxRef.current,
-				{
-					innerText: eventsRange.max,
-					snap: "innerText",
-					ease: "power4.out",
-					duration: 1
-				},
-				"<"
-			)
-			.to(eventsSliderRef.current, {
-				opacity: 1
-			});
+				duration: 1
+			},
+			"<"
+		);
+
+		timeline.to(
+			"#range-max",
+			{
+				innerText: eventsRange.max,
+				snap: "innerText",
+				ease: "power4.out",
+				duration: 1
+			},
+			"<"
+		);
+
+		timeline.to("#events-slider", {
+			opacity: 1
+		});
 	});
 
 	const prevTimelapse = useCallback(() => {
@@ -106,17 +126,6 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 		if (selectedTimelapseIndex === timelapses.length - 1) return;
 		selectTimelapse(selectedTimelapseIndex + 1);
 	}, [selectedTimelapseIndex, selectTimelapse, timelapses]);
-
-	// Render initial events range values.
-	useEffect(() => {
-		if (!eventsRangeMinRef.current || !eventsRangeMaxRef.current) return;
-
-		const eventsRange = findEventsRange(selectedTimelapse);
-		eventsRangeMinRef.current.innerText = String(eventsRange.min);
-		eventsRangeMaxRef.current.innerText = String(eventsRange.max);
-
-		// eslint-disable-next-line
-	}, []);
 
 	return (
 		<div
@@ -154,7 +163,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 
 				<span className={styles.controller__range}>
 					<p
-						ref={eventsRangeMinRef}
+						id="range-min"
 						className={cn(
 							styles["controller__range-value"],
 							styles["controller__range-value_min"]
@@ -164,7 +173,7 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 					</p>
 
 					<p
-						ref={eventsRangeMaxRef}
+						id="range-max"
 						className={cn(
 							styles["controller__range-value"],
 							styles["controller__range-value_max"]
@@ -196,8 +205,8 @@ export const TimelapseSlider: FC<TimelapseSliderProps> = ({
 			</div>
 
 			<div
+				id="events-slider"
 				className={styles.timelapse__events}
-				ref={eventsSliderRef}
 			>
 				{Boolean(isMobileWidth && selectedTimelapse.label) && (
 					<h3 className={styles.timelapse__label}>{selectedTimelapse.label}</h3>

@@ -46,10 +46,10 @@ export const Carousel: FC<CarouselProps> = ({
 			killTweenIfExists("Carousel Init");
 
 			timelapses.forEach((_, index) => {
-				const groupSelector = `g[data-index="${index}"]`;
+				const dot = `g[data-index="${index}"]`;
 				const position = index / timelapses.length - 1;
 
-				gsap.to(groupSelector, {
+				gsap.to(dot, {
 					id: "Carousel Init",
 					immediateRender: true,
 					motionPath: {
@@ -71,89 +71,95 @@ export const Carousel: FC<CarouselProps> = ({
 
 	// Прокрутка к выбранному элементу
 	const { contextSafe } = useGSAP(
-		(context) => {
-			const containerEl = containerRef.current;
-			const currentGroupSelector = `g[data-index="${selectedTimelapseIndex}"]`;
-
+		() => {
 			const angle = (360 / timelapses.length) * selectedTimelapseIndex;
 			const finalAngle = angle - 115;
 
-			killTweenIfExists(ROTATE_CAROUSEL_TWEEN_ID);
+			const containerEl = containerRef.current;
+			const selectedDot = `g[data-index="${selectedTimelapseIndex}"]`;
+			const durationConfig: Pick<gsap.TweenVars, "duration"> = isFirstRender
+				? { duration: 0 }
+				: {};
 
-			gsap
-				.timeline({
-					id: ROTATE_CAROUSEL_TWEEN_ID,
-					onComplete: () => {
-						context.kill();
-					}
-				})
-				.to(containerEl, {
-					duration: isFirstRender ? 0 : 1,
-					rotate: -finalAngle,
-					transformOrigin: "center center",
-					onUpdate: () => {
-						gsap.to("g", {
-							duration: isFirstRender ? 0 : 1,
-							rotate: finalAngle,
-							transformOrigin: "center center"
-						});
-					}
-				})
-				.to(
-					["g", "circle"],
-					{
-						duration: isFirstRender ? 0 : 1,
-						attr: IDLING_DOT_ATTRS
-					},
-					"<"
-				)
-				.to(
-					["text"],
-					{
-						duration: isFirstRender ? 0 : 1,
-						opacity: 0
-					},
-					"<"
-				)
-				.to([currentGroupSelector, `${currentGroupSelector}>circle`], {
-					duration: isFirstRender ? 0 : 1,
-					attr: ACTIVE_DOT_ATTRS
-				})
-				.to(
-					`${currentGroupSelector}>text`,
-					{
-						duration: isFirstRender ? 0 : 1,
-						opacity: 1
-					},
-					"<"
-				);
+			killTweenIfExists(ROTATE_CAROUSEL_TWEEN_ID);
+			const timeline = gsap.timeline({
+				id: ROTATE_CAROUSEL_TWEEN_ID,
+				onComplete: function () {
+					this.kill();
+				}
+			});
+
+			timeline.to(containerEl, {
+				...durationConfig,
+				rotate: -finalAngle,
+				transformOrigin: "center center",
+				onUpdate: () => {
+					gsap.to("g", {
+						...durationConfig,
+						rotate: finalAngle,
+						transformOrigin: "center center"
+					});
+				}
+			});
+
+			timeline.to(
+				["g", "circle"],
+				{
+					...durationConfig,
+					attr: IDLING_DOT_ATTRS
+				},
+				"<"
+			);
+
+			timeline.to(
+				["text"],
+				{
+					...durationConfig,
+					opacity: 0
+				},
+				"<"
+			);
+
+			timeline.to([selectedDot, `${selectedDot}>circle`], {
+				...durationConfig,
+				attr: ACTIVE_DOT_ATTRS
+			});
+
+			timeline.to(
+				`${selectedDot}>text`,
+				{
+					...durationConfig,
+					opacity: 1
+				},
+				"<"
+			);
 		},
 		{ scope: containerRef, dependencies: [selectedTimelapseIndex] }
 	);
 
 	const animateDot = contextSafe((index: number, to: "active" | "idle") => {
 		const rotateCarouselTween = gsap.getById(ROTATE_CAROUSEL_TWEEN_ID);
-		if (rotateCarouselTween?.isActive()) {
-			return;
-		}
+		if (rotateCarouselTween?.isActive()) return;
 
-		const groupSelector = `g[data-index="${index}"]`;
-		gsap
-			.timeline({
-				onComplete: function () {
-					this.kill();
-				}
-			})
-			.to([groupSelector, `${groupSelector}>circle`], {
-				attr: to === "active" ? ACTIVE_DOT_ATTRS : IDLING_DOT_ATTRS
-			})
-			.to(
-				`${groupSelector}>text`,
-				{
-					opacity: to === "active" ? 1 : 0
-				},
-				"<"
-			);
+		const selectedDot = `g[data-index="${index}"]`;
+
+		const timeline = gsap.timeline({
+			onComplete: function () {
+				this.kill();
+			}
+		});
+
+		timeline.to([selectedDot, `${selectedDot}>circle`], {
+			attr: to === "active" ? ACTIVE_DOT_ATTRS : IDLING_DOT_ATTRS
+		});
+
+		timeline.to(
+			`${selectedDot}>text`,
+			{
+				opacity: to === "active" ? 1 : 0
+			},
+			"<"
+		);
 	});
 
 	const handleGroupHover = contextSafe((index: number) => {
@@ -187,7 +193,7 @@ export const Carousel: FC<CarouselProps> = ({
 				<g
 					key={index}
 					data-index={index}
-					className={cn(styles.canvas__group)}
+					className={cn(styles.canvas__dot)}
 					onClick={() => onSelect(index)}
 					onMouseEnter={() => handleGroupHover(index)}
 					onMouseLeave={() => handleGroupBlur(index)}
